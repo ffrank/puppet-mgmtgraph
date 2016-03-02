@@ -13,9 +13,17 @@ Puppet::Face.define(:mgmtgraph, '0.0.1') do
     summary "Print the graph in YAML format"
 
     when_invoked do |*args|
+      graph = Puppet::Face[@name, @version].find
+      puts YAML.dump graph
+    end
+  end
+
+  action :find do
+    summary "Return the graph in hash format"
+    when_invoked do |*args|
       catalog = Puppet::Face[:catalog, "0.0"].find
       graph = PuppetX::CatalogTranslation.to_mgmt(catalog.to_ral)
-      puts YAML.dump PuppetX::CatalogTranslation.desymbolize(graph)
+      PuppetX::CatalogTranslation.desymbolize(graph)
     end
   end
 end
