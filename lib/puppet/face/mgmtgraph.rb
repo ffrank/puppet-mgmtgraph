@@ -21,7 +21,17 @@ Puppet::Face.define(:mgmtgraph, '0.0.1') do
   action :find do
     summary "Return the graph in hash format"
     when_invoked do |*args|
+
+      # suppress performance message from the compiler
+      if Puppet[:log_level] == "notice"
+        Puppet[:log_level] = "warning"
+        reset_log_level = true
+      end
       catalog = Puppet::Face[:catalog, "0.0"].find
+      if reset_log_level
+        Puppet[:log_level] = "notice"
+      end
+
       graph = PuppetX::CatalogTranslation.to_mgmt(catalog.to_ral)
       PuppetX::CatalogTranslation.desymbolize(graph)
     end
