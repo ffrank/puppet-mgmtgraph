@@ -42,7 +42,7 @@ module PuppetX::CatalogTranslation
       result[:edges] << { :name => next_edge, :from => from, :to => to }
     end
 
-    puts YAML.dump desymbolize(result)
+    result
   end
 
   def self.mgmt_type(resource)
