@@ -10,9 +10,8 @@ Authored by Felix Frank.
 
 # TODO
 
-* Tests!
+* more meaningful tests
 * an actual README
 * metadata for Forge releases
 * lots of refactoring
 * restore compatibility w/ latest `mgmt` builds
-* did I mention tests?
