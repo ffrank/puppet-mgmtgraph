@@ -3,6 +3,9 @@ require 'puppet/type'
 require 'puppet/type/stage'
 require 'puppet/type/component'
 
+require 'puppetx/catalog_translation/type/file'
+require 'puppetx/catalog_translation/type/exec'
+
 module PuppetX; end
 
 module PuppetX::CatalogTranslation
@@ -12,23 +15,12 @@ module PuppetX::CatalogTranslation
       :comment => "generated from puppet catalog for #{catalog.name}",
     }
     result[:types] = {}
-    edge_counter = 1
+    edge_counter = 0
 
-    catalog.resources.select { |res|
-      case res
-      when Puppet::Type::Component
-        false
-      when Puppet::Type::Stage
-        false
-      when Puppet::Type
-        true
-      else
-        false
-      end
-    }.map(&:to_resource).map(&:to_data_hash).each do |resource_hash|
-      next unless node = mgmt_type(resource_hash)
-      result[:types][node[:type]] ||= []
-      result[:types][node[:type]] << node[:content]
+    catalog.resources.each do |res|
+      next unless translator = PuppetX::CatalogTranslation::Type.translation_for(res.type)
+      result[:types][translator.output] ||= []
+      result[:types][translator.output] << translator.translate!(res)
     end
 
     catalog.relationship_graph.edges.map(&:to_data_hash).each do |edge|
@@ -42,47 +34,7 @@ module PuppetX::CatalogTranslation
       result[:edges] << { :name => next_edge, :from => from, :to => to }
     end
 
-    result
-  end
-
-  def self.mgmt_type(resource)
-    result = {}
-    resource["parameters"] ||= {} # resource w/o parameters
-    case resource["type"]
-    when 'File'
-      result[:type] = :file
-      result[:content] = {
-        :name => resource["title"],
-        :path => resource["parameters"][:path] || resource["title"],
-      }
-      if resource["parameters"][:ensure]
-        result[:content][:state] = case resource["parameters"][:ensure]
-          when :present, :file
-            :exists
-          when :absent
-            :absent
-        end
-      end
-      if resource["parameters"]["content"]
-        result[:content][:content] = resource["parameters"][:content]
-      end
-      result
-    when 'Exec'
-      result[:type] = :exec
-      result[:content] = {
-        :name => resource["title"],
-        :cmd  => resource["parameters"][:command] || resource["title"],
-        :shell => resource["parameters"][:shell] || "",
-        :timeout => resource["parameters"][:timeout] || 0,
-        :watchcmd => "",
-        :watchshell => "",
-        :ifcmd => resource["parameters"][:onlyif] || "",
-        :ifshell => "",
-        :pollint => 0,
-        :state => :present
-      }
-      result
-    end
+    desymbolize(result)
   end
 
   # From File["foo"] to { type => file, name => foo }

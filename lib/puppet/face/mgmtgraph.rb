@@ -1,5 +1,6 @@
 require 'puppet/face'
 require 'puppetx/catalog_translation'
+require 'puppetx/catalog_translation/type'
 
 Puppet::Face.define(:mgmtgraph, '0.0.1') do
   
@@ -32,8 +33,7 @@ Puppet::Face.define(:mgmtgraph, '0.0.1') do
         Puppet[:log_level] = "notice"
       end
 
-      graph = PuppetX::CatalogTranslation.to_mgmt(catalog.to_ral)
-      PuppetX::CatalogTranslation.desymbolize(graph)
+      PuppetX::CatalogTranslation.to_mgmt(catalog.to_ral)
     end
   end
 end
