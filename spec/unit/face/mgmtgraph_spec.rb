@@ -20,6 +20,12 @@ describe "puppet mgmtgraph" do
       Puppet::Face[:catalog, catalog_face_version].expects(:find).returns Puppet::Resource::Catalog.new
       expect(subject.find).to be_a Hash
     end
+
+    it "sends the catalog to the Catalog_Translation module" do
+      Puppet::Face[:catalog, catalog_face_version].stubs(:find).returns Puppet::Resource::Catalog.new
+      PuppetX::CatalogTranslation.expects(:to_mgmt)
+      subject.find
+    end
   end
 
 end
