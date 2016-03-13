@@ -3,9 +3,6 @@ require 'puppet/type'
 require 'puppet/type/stage'
 require 'puppet/type/component'
 
-require 'puppetx/catalog_translation/type/file'
-require 'puppetx/catalog_translation/type/exec'
-
 module PuppetX; end
 
 module PuppetX::CatalogTranslation

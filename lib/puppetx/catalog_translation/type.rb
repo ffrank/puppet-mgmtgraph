@@ -38,6 +38,9 @@ module CatalogTranslation
     end
 
     def self.translation_for(type)
+      unless @instances.has_key? type
+        load_translator(type)
+      end
       @instances[type] || @instances[:default]
     end
 
@@ -45,6 +48,14 @@ module CatalogTranslation
 
     def self.register(instance)
       @instances[instance.name] = instance
+    end
+
+    def self.loader
+      @loader ||= Puppet::Util::Autoload.new(self, "puppetx/catalog_translation/type")
+    end
+
+    def self.load_translator(type)
+      loader.load(type)
     end
 
     # below are DSL methods
