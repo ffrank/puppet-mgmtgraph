@@ -1,7 +1,6 @@
 require 'puppet/resource/catalog'
 require 'puppet/type'
-require 'puppet/type/stage'
-require 'puppet/type/component'
+require 'puppetx/catalog_translation/type'
 
 module PuppetX; end
 

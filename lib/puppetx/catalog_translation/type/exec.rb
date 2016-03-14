@@ -1,5 +1,3 @@
-require 'puppetx/catalog_translation/type'
-
 PuppetX::CatalogTranslation::Type.new :exec do
   spawn :name do
     @resource.title

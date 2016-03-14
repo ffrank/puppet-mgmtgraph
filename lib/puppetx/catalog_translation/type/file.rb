@@ -1,5 +1,3 @@
-require 'puppetx/catalog_translation/type'
-
 module PuppetX::CatalogTranslation
   Type.new :file do
     spawn :name do
