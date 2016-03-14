@@ -4,6 +4,7 @@
 
 require 'puppet'
 require 'puppet/face'
+require 'puppetx/catalog_translation'
 gem 'rspec', '>=3.0.0'
 require 'rspec/expectations'
 
