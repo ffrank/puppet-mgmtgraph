@@ -23,7 +23,7 @@ module CatalogTranslation
 
         result[title] = if translation[:spawned]
           translation[:block].call
-        elsif translation.has_key? :block
+        elsif translation.has_key?(:block) && resource.parameters[attr]
           translation[:block].call(resource[attr])
         else
           resource[attr]
