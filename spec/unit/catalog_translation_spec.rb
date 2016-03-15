@@ -99,4 +99,26 @@ describe "PuppetX::CatalogTranslation" do
     end
   end
 
+  describe "::desymbolize" do
+    { 'a string' => 'spec',
+      'a symbol' => :spec,
+      'an array of strings' => %w{spec test array},
+      'an array of symbols' => [:spec, :test, :array],
+      'a hash of strings' => { 'k' => 'v', 'x' => 'v' },
+      'a hash of symbols' => { :k => :v, :x => :y },
+      'a complex structure' => { :k => [ :a, :b ] } }.each do |description,value|
+      context "when given #{description}" do
+        it "returns strings only" do
+          result = PuppetX::CatalogTranslation.desymbolize(value)
+          if result.respond_to? :to_a
+            result = result.to_a
+          end
+          [result].flatten.each do |element|
+            expect(element).to be_a String
+          end
+        end
+      end
+    end
+  end
+
 end
