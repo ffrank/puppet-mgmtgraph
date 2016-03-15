@@ -10,8 +10,39 @@ Released under the terms of the Apache 2 License.
 
 Authored by Felix Frank.
 
-# TODO
+## Usage
 
-* an actual README
+Currently, the most useful invocation of `puppet mgmtgraph` targets single manifests of simple structure
+
+    puppet mgmtgraph --manifest /path/to/my.pp
+
+The manifest can use modules from the configured environment, but please note that this likely clashes with current
+[limitations](#limitations).
+
+With no manifest specified, `puppet mgmtgraph` will behave like `puppet agent` and receive
+the catalog from the configured master, using its agent certificate. (This works courtesy
+of the `puppet catalog` face.)
+
+    puppet mgmtgraph
+
+## Limitations
+
+The set of supported catalog elements is still quite small:
+
+ * file resources
+ * exec resources
+ * dependency edges that directly connect supported resources
+
+Resources in classes and defines are considered, but containment, complex relationships, signaling edges etc.
+are unsupported and/or untested.
+
+Basically, a supported manifest can currently look like the following:
+
+    file { 'a': ... } -> exec { 'b': ... } -> file { 'c': ... }
+
+Anything more sophisticated will lead to erratic mileage.
+
+## TODO
+
 * metadata for Forge releases
 * restore compatibility w/ latest `mgmt` builds
