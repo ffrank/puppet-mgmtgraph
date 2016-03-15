@@ -46,6 +46,12 @@ Basically, a supported manifest can currently look like the following:
 
 Anything more sophisticated will lead to erratic mileage.
 
+## Compatibility
+
+Supports Puppet `3.x` and `4.x`.
+
+Supports `mgmt` build [c47418b](https://github.com/purpleidea/mgmt/commit/c47418b02d093447395c9c0cbee76072ae753055).
+
 ## TODO
 
 * metadata for Forge releases

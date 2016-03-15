@@ -1,0 +1,11 @@
+{
+  "name": "ffrank-mgmtgraph",
+  "version": "0.1.0",
+  "author": "Felix Frank",
+  "summary": "Puppet module that adds the mgmtgraph face",
+  "license": "Apache-2.0",
+  "source": "https://github.com/ffrank/puppet-mgmtgraph",
+  "issues_url": "https://github.com/ffrank/puppet-mgmtgraph/issues",
+  "project_page": "https://github.com/ffrank/puppet-mgmtgraph",
+  "dependencies": []
+}
