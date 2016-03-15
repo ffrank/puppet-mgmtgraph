@@ -14,7 +14,7 @@ Authored by Felix Frank.
 
 Currently, the most useful invocation of `puppet mgmtgraph` targets single manifests of simple structure
 
-    puppet mgmtgraph --manifest /path/to/my.pp
+    puppet mgmtgraph --manifest /path/to/my.pp >/tmp/mygraph.yaml
 
 The manifest can use modules from the configured environment, but please note that this likely clashes with current
 [limitations](#limitations).
@@ -23,7 +23,11 @@ With no manifest specified, `puppet mgmtgraph` will behave like `puppet agent` a
 the catalog from the configured master, using its agent certificate. (This works courtesy
 of the `puppet catalog` face.)
 
-    puppet mgmtgraph
+    puppet mgmtgraph >/tmp/mygraph.yaml
+
+Finally, run the graph through [mgmt](https://github.com/purpleidea/mgmt/)
+
+    mgmt run --file /tmp/mygraph.yaml
 
 ## Limitations
 
