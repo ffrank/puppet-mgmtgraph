@@ -7,5 +7,7 @@ $:.unshift('lib')
 # gem "rails"
 gem "puppet", ENV['PUPPET_GEM_VERSION'] || '~> 4.0'
 gem "puppetlabs_spec_helper"
-gem "pry"
-gem "pry-byebug"
+
+if File.exists? "#{__FILE__}.local"
+  eval(File.read("#{__FILE__}.local"), binding)
+end
