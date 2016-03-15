@@ -78,4 +78,25 @@ describe "PuppetX::CatalogTranslation" do
     end
   end
 
+  describe "::parse_ref" do
+    %w{file exec service}.each do |resource_type|
+      it "returns a hash when given a #{resource_type} reference" do
+        ref = "#{resource_type.capitalize}[spec]"
+        expect(PuppetX::CatalogTranslation.parse_ref(ref)).to be_a Hash
+      end
+
+      it "turns the type into lower case" do
+        ref = "#{resource_type.capitalize}[spec]"
+        expect(PuppetX::CatalogTranslation.parse_ref(ref)[:type]).to match /^[a-z]/
+      end
+    end
+    
+    %w{notify resources cron}.each do |resource_type|
+      it "returns nil when given a #{resource_type} reference" do
+        ref = "#{resource_type.capitalize}[spec]"
+        expect(PuppetX::CatalogTranslation.parse_ref(ref)).to be nil
+      end
+    end
+  end
+
 end
