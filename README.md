@@ -50,7 +50,7 @@ Anything more sophisticated will lead to erratic mileage.
 
 Supports Puppet `3.x` and `4.x`.
 
-Supports `mgmt` build [c47418b](https://github.com/purpleidea/mgmt/commit/c47418b02d093447395c9c0cbee76072ae753055).
+Supports `mgmt` 0.0.2 (master is presently not supported)
 
 ## TODO
 
