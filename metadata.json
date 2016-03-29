@@ -1,6 +1,6 @@
 {
   "name": "ffrank-mgmtgraph",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "author": "Felix Frank",
   "summary": "Puppet module that adds the mgmtgraph face",
   "license": "Apache-2.0",
@@ -8,5 +8,19 @@
   "issues_url": "https://github.com/ffrank/puppet-mgmtgraph/issues",
   "project_page": "https://github.com/ffrank/puppet-mgmtgraph",
   "dependencies": [],
-  "tags": [ "compiler", "catalog", "mgmt" ]
+  "tags": [ "compiler", "catalog", "mgmt" ],
+  "operatingsystem_support": [
+    {
+    "operatingsystem":"RedHat",
+    "operatingsystemrelease":[ "6.0", "7.0" ]
+    },
+    {
+    "operatingsystem":"Debian",
+    "operatingsystemrelease":[ "8.0" ]
+    },
+    {
+    "operatingsystem":"Ubuntu",
+    "operatingsystemrelease":[ "12.04", "14.04" ]
+    }
+  ]
 }
