@@ -9,14 +9,15 @@ module PuppetX::CatalogTranslation
     result = {
       :graph => catalog.name,
       :comment => "generated from puppet catalog for #{catalog.name}",
+      :resources => {},
+      :edges => [],
     }
-    result[:types] = {}
     edge_counter = 0
 
     catalog.resources.each do |res|
       next unless translator = PuppetX::CatalogTranslation::Type.translation_for(res.type)
-      result[:types][translator.output] ||= []
-      result[:types][translator.output] << translator.translate!(res)
+      result[:resources][translator.output] ||= []
+      result[:resources][translator.output] << translator.translate!(res)
     end
 
     catalog.relationship_graph.edges.map(&:to_data_hash).each do |edge|
@@ -26,7 +27,6 @@ module PuppetX::CatalogTranslation
       next unless from and to
       next_edge = "e#{edge_counter += 1}"
 
-      result[:edges] ||= []
       result[:edges] << { :name => next_edge, :from => from, :to => to }
     end
 

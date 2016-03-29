@@ -51,7 +51,7 @@ describe "PuppetX::CatalogTranslation" do
       # make sure that the file translator is not loaded
       PuppetX::CatalogTranslation::Type.expects(:load_translator).with(:file)
       result = PuppetX::CatalogTranslation.to_mgmt(file_catalog)
-      expect(result['types']).to_not include 'file'
+      expect(result['resources']).to_not include 'file'
     end
 
     it "keeps dependency edges between supported resources" do
