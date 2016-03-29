@@ -50,9 +50,11 @@ Anything more sophisticated will lead to erratic mileage.
 
 Supports Puppet `3.x` and `4.x`.
 
-Supports `mgmt` 0.0.2 (master is presently not supported)
+Supports `mgmt` 0.0.3 (no earlier releases)
 
 ## TODO
 
-* metadata for Forge releases
-* restore compatibility w/ latest `mgmt` builds
+* more flexibility in the DSL
+* easier DSL (e.g. add a method to get at the namevar)
+* package type support
+* general fallback support using `puppet resource` (a.k.a. the Daenny hack)
