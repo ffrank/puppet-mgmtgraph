@@ -57,8 +57,8 @@ describe "PuppetX::CatalogTranslation" do
     it "keeps dependency edges between supported resources" do
       result = PuppetX::CatalogTranslation.to_mgmt(edge_catalog)
       expect(result['edges'][0]).to include(
-        'from' => { 'type' => 'file', 'name' => '/tmp/spec1' },
-        'to'   => { 'type' => 'file', 'name' => '/tmp/spec2' },
+        'from' => { 'kind' => 'file', 'name' => '/tmp/spec1' },
+        'to'   => { 'kind' => 'file', 'name' => '/tmp/spec2' },
       )
     end
 
@@ -68,7 +68,7 @@ describe "PuppetX::CatalogTranslation" do
       result = PuppetX::CatalogTranslation.to_mgmt(edge_catalog)
       expect(result['edges'].length).to be 1
       expect(result['edges'][0]).to_not include(
-        'to' => { 'type' => 'notify', 'name' => 'this will not translate' },
+        'to' => { 'kind' => 'notify', 'name' => 'this will not translate' },
       )
     end
 
@@ -87,7 +87,7 @@ describe "PuppetX::CatalogTranslation" do
 
       it "turns the type into lower case" do
         ref = "#{resource_type.capitalize}[spec]"
-        expect(PuppetX::CatalogTranslation.parse_ref(ref)[:type]).to match /^[a-z]/
+        expect(PuppetX::CatalogTranslation.parse_ref(ref)[:kind]).to match /^[a-z]/
       end
     end
     

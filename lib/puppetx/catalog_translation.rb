@@ -41,7 +41,7 @@ module PuppetX::CatalogTranslation
     type = $1.downcase
     title = $2
     return nil unless [ 'file', 'exec', 'service' ].include? type
-    return { :type => type, :name => title }
+    return { :kind => type, :name => title }
   end
 
   def self.desymbolize(it)
