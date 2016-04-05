@@ -64,7 +64,7 @@ describe "PuppetX::CatalogTranslation" do
 
     it "discards edges that connect to an ignored resource" do
       # make sure that no notify translator is loaded
-      PuppetX::CatalogTranslation::Type.expects(:load_translator).with(:notify)
+      PuppetX::CatalogTranslation::Type.expects(:load_translator).with(:notify).at_least_once
       result = PuppetX::CatalogTranslation.to_mgmt(edge_catalog)
       expect(result['edges'].length).to be 1
       expect(result['edges'][0]).to_not include(

@@ -40,7 +40,7 @@ module PuppetX::CatalogTranslation
     end
     type = $1.downcase
     title = $2
-    return nil unless [ 'file', 'exec', 'service' ].include? type
+    return nil unless PuppetX::CatalogTranslation::Type.translation_for(type.intern)
     return { :kind => type, :name => title }
   end
 
