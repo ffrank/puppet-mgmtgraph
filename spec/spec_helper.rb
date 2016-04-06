@@ -27,3 +27,9 @@ RSpec.configure do |config|
     Puppet::Test::TestHelper.after_each_test()
   end
 end
+
+def resource_catalog(manifest)
+  Puppet[:code] = manifest
+  node = Puppet::Node.new('spec.example.net')
+  Puppet::Parser::Compiler.compile(node).to_ral
+end
