@@ -36,6 +36,10 @@ describe "PuppetX::CatalogTranslation" do
       result
     end
 
+    before :each do
+      PuppetX::CatalogTranslation::Type.clear
+    end
+
     it "always generates a header" do
       result = PuppetX::CatalogTranslation.to_mgmt(empty_catalog)
       expect(result).to include 'graph'
@@ -63,6 +67,8 @@ describe "PuppetX::CatalogTranslation" do
     end
 
     it "discards edges that connect to an ignored resource" do
+      # load file translator before stubbing
+      PuppetX::CatalogTranslation::Type.translation_for(:file)
       # make sure that no notify translator is loaded
       PuppetX::CatalogTranslation::Type.expects(:load_translator).with(:notify).at_least_once
       result = PuppetX::CatalogTranslation.to_mgmt(edge_catalog)

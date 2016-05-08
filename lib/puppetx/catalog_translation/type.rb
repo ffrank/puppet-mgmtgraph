@@ -44,6 +44,12 @@ module CatalogTranslation
       @instances[type] || @instances[:default]
     end
 
+    # For testing only: unloads all translators.
+    def self.clear
+      @instances = {}
+      @translations = {}
+    end
+
     private
 
     def self.register(instance)
