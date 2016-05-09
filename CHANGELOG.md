@@ -1,5 +1,11 @@
 # Alpha releases
 
+#### 0.2.1 2016-05-09
+
+ * support service resources
+ * support package resources
+ * more flexible support for relationship edges
+
 #### 0.2.0 2016-03-30
 
  * (breaking) move output format from mgmt 0.0.2 to 0.0.3
