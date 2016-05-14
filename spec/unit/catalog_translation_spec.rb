@@ -103,6 +103,14 @@ describe "PuppetX::CatalogTranslation" do
         expect(PuppetX::CatalogTranslation.parse_ref(ref)).to be nil
       end
     end
+
+    it "maps the type of the referenced resource appropriately" do
+      PuppetX::CatalogTranslation::Type.new :spec_type do
+        emit :mgmt_type
+      end
+      ref = "Spec_type[spec]"
+      expect(PuppetX::CatalogTranslation.parse_ref(ref)[:kind]).to be == :mgmt_type
+    end
   end
 
   describe "::desymbolize" do

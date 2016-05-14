@@ -40,7 +40,8 @@ module PuppetX::CatalogTranslation
     end
     type = $1.downcase
     title = $2
-    return nil unless PuppetX::CatalogTranslation::Type.translation_for(type.intern)
+    return nil unless translator = PuppetX::CatalogTranslation::Type.translation_for(type.intern)
+    type = translator.output
     return { :kind => type, :name => title }
   end
 
