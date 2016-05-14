@@ -25,6 +25,10 @@ of the `puppet catalog` face.)
 
     puppet mgmtgraph >/tmp/mygraph.yaml
 
+A handy shortcut for testing simple manifests is the `--code` parameter
+
+    puppet mgmtgraph --code 'file { "/tmp/test": ensure => present } -> package { "cowsay": ensure => installed }'
+
 Finally, run the graph through [mgmt](https://github.com/purpleidea/mgmt/)
 
     mgmt run --file /tmp/mygraph.yaml
