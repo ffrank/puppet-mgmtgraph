@@ -1,0 +1,40 @@
+require 'spec_helper'
+
+describe "PuppetX::CatalogTranslation::Type::File" do
+  it "adds a trailing slash to paths of directories" do
+    catalog = resource_catalog("file { '/tmp/spec_dir': ensure => 'directory' }")
+    graph = PuppetX::CatalogTranslation.to_mgmt(catalog)
+    expect(graph['resources']['file'][0]).to include('path' => '/tmp/spec_dir/')
+  end
+
+  it "maps present/file/directory to exists" do
+    catalog = resource_catalog("file { '/a': ensure => present; '/b': ensure => file; '/c': ensure => directory; }")
+    graph = PuppetX::CatalogTranslation.to_mgmt(catalog)
+    graph['resources']['file'].each do |res|
+      expect(res).to include('state' => 'exists')
+    end
+  end
+
+  it "maps directory sources to the content parameter" do
+    catalog = resource_catalog("file { '/tmp/spec_dir': ensure => 'directory', source => '/tmp/spec_source' }")
+    graph = PuppetX::CatalogTranslation.to_mgmt(catalog)
+    expect(graph['resources']['file'][0]).to include('content' => '/tmp/spec_source')
+  end
+
+  it "reports an error when a file source is a URL" do
+    catalog = resource_catalog("file { '/tmp/spec_dir': ensure => 'directory', source => 'puppet:///spec/dir' }")
+    Puppet.expects(:err).with(regexp_matches(/puppet fileserver URL/))
+    graph = PuppetX::CatalogTranslation.to_mgmt(catalog)
+    expect(graph['resources']['file'][0]).to include('content' => '')
+  end
+
+  it "reports an error when multiple sources are specified" do
+    catalog = resource_catalog("file { '/tmp/spec_dir':
+                                  ensure => 'directory',
+                                  source => [ '/tmp/source1', '/tmp/source2', ],
+                                }")
+    Puppet.expects(:err).with(regexp_matches(/multiple sources/))
+    graph = PuppetX::CatalogTranslation.to_mgmt(catalog)
+    expect(graph['resources']['file'][0]).to include('content' => '')
+  end
+end
