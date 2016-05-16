@@ -12,7 +12,6 @@ module PuppetX::CatalogTranslation
       :resources => {},
       :edges => [],
     }
-    edge_counter = 0
 
     catalog.resources.each do |res|
       next unless translator = PuppetX::CatalogTranslation::Type.translation_for(res.type)
@@ -25,9 +24,9 @@ module PuppetX::CatalogTranslation
       to = parse_ref(edge["target"])
 
       next unless from and to
-      next_edge = "e#{edge_counter += 1}"
-
-      result[:edges] << { :name => next_edge, :from => from, :to => to }
+      # deterministic edge naming is important
+      edge_id = "#{edge["source"]} -> #{edge["target"]}"
+      result[:edges] << { :name => edge_id, :from => from, :to => to }
     end
 
     desymbolize(result)
