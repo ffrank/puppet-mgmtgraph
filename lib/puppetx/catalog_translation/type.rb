@@ -21,9 +21,14 @@ module CatalogTranslation
       @translations.each do |attr,translation|
         title = translation[:alias] || attr
 
-        result[title] = if translation[:spawned]
-          translation[:block].call
-        elsif translation.has_key?(:block) && resource.parameters[attr]
+        if translation[:spawned]
+          result[title] = translation[:block].call
+          next
+        end
+
+        next if !resource.parameters[attr]
+
+        result[title] = if translation.has_key?(:block)
           translation[:block].call(resource[attr])
         else
           resource[attr]

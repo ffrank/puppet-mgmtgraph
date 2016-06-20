@@ -27,4 +27,10 @@ describe "PuppetX::CatalogTranslation" do
       expect(graph['edges']).to include(edge)
     end
   end
+
+  it "only includes renamed attributes in output if the original was in the input" do
+    catalog = resource_catalog("service { 'apache2': ensure => running }")
+    graph = PuppetX::CatalogTranslation.to_mgmt(catalog)
+    expect(graph['resources']['service'][0]).to_not include('startup')
+  end
 end
