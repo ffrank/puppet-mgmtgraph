@@ -12,6 +12,15 @@ Authored by Felix Frank.
 
 ## Usage
 
+It is no longer necessary to invoke `puppet mgmtgraph` directly, since it's possible to use `mgmt`'s `--puppet` switch
+to load the resulting graph directly.
+
+Still, for testing and debugging, the tool is still useful. It can also make sense to save a translated YAML graph
+to a file in order to cache it. After all, building the catalog is usually the most time consuming part when running
+`mgmt` from a Puppet manifest.
+
+### Manual invocation
+
 Currently, the most useful invocation of `puppet mgmtgraph` targets single manifests of simple structure
 
     puppet mgmtgraph --manifest /path/to/my.pp >/tmp/mygraph.yaml
@@ -39,14 +48,16 @@ The set of supported catalog elements is still quite small:
 
  * file resources
  * exec resources
+ * service resources
+ * package resources
  * dependency edges that directly connect supported resources
 
-Resources in classes and defines are considered, but containment, complex relationships, signaling edges etc.
-are unsupported and/or untested.
+Resources in classes and defines are translated, but containment, complex relationships, signaling edges etc.
+are unsupported and/or untested. Translation of virtual and exported resources is untested.
 
 Basically, a supported manifest can currently look like the following:
 
-    file { 'a': ... } -> exec { 'b': ... } -> file { 'c': ... }
+    package { 'x': ... } -> file { 'a': ... } -> exec { 'b': ... } -> service { 'c': ... }
 
 Anything more sophisticated will lead to erratic mileage.
 
@@ -61,3 +72,5 @@ Supports `mgmt` 0.0.3 (no earlier releases)
 * more flexibility in the DSL
 * easier DSL (e.g. add a method to get at the namevar)
 * general fallback support using `puppet resource` (a.k.a. the Daenny hack)
+* full class/define support
+* support for export and import of resources (if possible)
