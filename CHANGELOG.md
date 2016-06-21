@@ -1,5 +1,15 @@
 # Alpha releases
 
+#### 0.2.2 2016-06-22
+
+ * generate a `watchcmd` in `exec` resources based on Puppet's `runinterval`
+ * fix the `package` type translation
+ * support `ensure => directory` in `file` resources
+ * generate deterministic names for relationship edges
+ * some bug- and doc fixes
+
+This release contains contributed code from James Shubin.
+
 #### 0.2.1 2016-05-09
 
  * support service resources

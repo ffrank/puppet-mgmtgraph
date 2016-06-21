@@ -1,6 +1,6 @@
 {
   "name": "ffrank-mgmtgraph",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "author": "Felix Frank",
   "summary": "Puppet module that adds the mgmtgraph face",
   "license": "Apache-2.0",
