@@ -84,32 +84,27 @@ describe "PuppetX::CatalogTranslation" do
     end
   end
 
-  describe "::parse_ref" do
-    %w{file exec service}.each do |resource_type|
+  describe "::translate_vertex" do
+    [ :file, :exec, :service ].each do |resource_type|
       it "returns a hash when given a #{resource_type} reference" do
-        ref = "#{resource_type.capitalize}[spec]"
-        expect(PuppetX::CatalogTranslation.parse_ref(ref)).to be_a Hash
-      end
-
-      it "turns the type into lower case" do
-        ref = "#{resource_type.capitalize}[spec]"
-        expect(PuppetX::CatalogTranslation.parse_ref(ref)[:kind]).to match /^[a-z]/
+        vertex = Puppet::Type.type(resource_type).new({ :name => '/spec' })
+        expect(PuppetX::CatalogTranslation.translate_vertex(vertex)).to be_a Hash
       end
     end
-    
-    %w{notify resources cron}.each do |resource_type|
+
+    [ :notify, :resources, :cron ].each do |resource_type|
       it "returns nil when given a #{resource_type} reference" do
-        ref = "#{resource_type.capitalize}[spec]"
-        expect(PuppetX::CatalogTranslation.parse_ref(ref)).to be nil
+        vertex = Puppet::Type.type(resource_type).new({ :name => 'cron' })
+        expect(PuppetX::CatalogTranslation.translate_vertex(vertex)).to be nil
       end
     end
 
     it "maps the type of the referenced resource appropriately" do
-      PuppetX::CatalogTranslation::Type.new :spec_type do
+      PuppetX::CatalogTranslation::Type.new :file do
         emit :mgmt_type
       end
-      ref = "Spec_type[spec]"
-      expect(PuppetX::CatalogTranslation.parse_ref(ref)[:kind]).to be == :mgmt_type
+      vertex = Puppet::Type.type(:file).new({ :name => '/spec' })
+      expect(PuppetX::CatalogTranslation.translate_vertex(vertex)[:kind]).to be == :mgmt_type
     end
   end
 
