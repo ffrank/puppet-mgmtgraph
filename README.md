@@ -50,16 +50,33 @@ The set of supported catalog elements is still quite small:
  * exec resources
  * service resources
  * package resources
- * dependency edges that directly connect supported resources
 
-Resources in classes and defines are translated, but containment, complex relationships, signaling edges etc.
-are unsupported and/or untested. Translation of virtual and exported resources is untested.
+Resources of other types are silently dropped.
+
+Translation of virtual and exported resources is untested. Containment of supported resources
+in classes and defined types should work.
 
 Basically, a supported manifest can currently look like the following:
 
-    package { 'x': ... } -> file { 'a': ... } -> exec { 'b': ... } -> service { 'c': ... }
+```puppet
+    class x { file { 'd': } }
 
-Anything more sophisticated will lead to erratic mileage.
+    define thing($file=$name) { file { "/tmp/$file": ... } }
+
+    include x
+
+    package { 'x': ... }
+    ->
+    file { 'a': ... }
+
+    thing { 'f': file => 'f-thing', }
+    ->
+    Class['x']
+    ->
+    exec { 'b': ... }
+    ->
+    service { 'c': require => File['a'], ... }
+```
 
 ## Compatibility
 
@@ -72,5 +89,4 @@ Supports `mgmt` 0.0.3 (no earlier releases)
 * more flexibility in the DSL
 * easier DSL (e.g. add a method to get at the namevar)
 * general fallback support using `puppet resource` (a.k.a. the Daenny hack)
-* full class/define support
 * support for export and import of resources (if possible)
