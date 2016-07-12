@@ -1,5 +1,9 @@
 # Alpha releases
 
+#### 0.2.3 2016-07-12
+
+ * (#1) support relationships with classes and insances of defined types
+
 #### 0.2.2 2016-06-22
 
  * generate a `watchcmd` in `exec` resources based on Puppet's `runinterval`
