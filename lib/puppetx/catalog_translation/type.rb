@@ -8,6 +8,7 @@ module CatalogTranslation
     def initialize(name,&block)
       @name = name
       @translations = {}
+      @custom_title = false
       instance_eval(&block)
       self.class.register self
     end
@@ -43,10 +44,24 @@ module CatalogTranslation
     end
 
     def self.translation_for(type)
+      unless @instances.has_key? :default_translation
+        load_translator(:default_translation)
+      end
       unless @instances.has_key? type
         load_translator(type)
       end
-      @instances[type] || @instances[:default]
+      @instances[type] || @instances[:default_translation]
+    end
+
+    def title(resource)
+      if @custom_title
+        @resource = resource
+        result = @translations[:name][:block].call
+        @resource = nil
+        result
+      else
+        resource[:name]
+      end
     end
 
     # For testing only: unloads all translators.
@@ -99,6 +114,10 @@ module CatalogTranslation
     def emit(output)
       raise "emit has been called twice for #{name}" if @output
       @output = output
+    end
+
+    def override_title
+      @custom_title = true
     end
 
   end

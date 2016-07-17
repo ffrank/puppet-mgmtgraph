@@ -34,9 +34,9 @@ module PuppetX::CatalogTranslation
 
   def self.translate_vertex(vertex)
     type = vertex.type
-    title = vertex[:name]
     return nil unless translator = PuppetX::CatalogTranslation::Type.translation_for(type)
     type = translator.output
+    title = translator.title(vertex)
     return { :kind => type, :name => title }
   end
 
