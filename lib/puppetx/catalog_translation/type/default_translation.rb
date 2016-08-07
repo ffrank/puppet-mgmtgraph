@@ -10,12 +10,10 @@ PuppetX::CatalogTranslation::Type.new :default_translation do
   def command(resource)
     r_type = @resource.type.to_s
     r_title = @resource[:name]
-    r_params = @resource.parameters_with_value.reject { |param|
-      param.isnamevar?
-    }.map { |param|
-      "#{param.name.to_s}='#{param.value.to_s}'"
-    }.join(" ")
-    "puppet resource #{r_type} '#{r_title}' #{r_params}"
+    r_params = @resource.to_hash.reject { |attr,value|
+      attr == :name
+    }
+    "puppet yamlresource #{r_type} '#{r_title}' '#{Psych.to_json(r_params).chomp}'"
   end
 
   spawn :cmd do
@@ -31,7 +29,7 @@ PuppetX::CatalogTranslation::Type.new :default_translation do
   # to determine sync state, do a noop run and look for a line like this:
   # Notice: /File[/tmp/prtest]/ensure: current_value file, should be absent (noop)
   # XXX this is painful, launches puppet twice for unsynced vertices
-  spawn(:ifcmd) { "#{command(@resource)} --noop | grep -q ^Notice:" }
+  spawn(:ifcmd) { "#{command(@resource)} --noop --color=false | grep -q ^Notice:" }
 
   spawn(:state) { :present }
 
