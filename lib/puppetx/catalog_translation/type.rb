@@ -10,6 +10,12 @@ module CatalogTranslation
       @translations = {}
       @custom_title = false
       instance_eval(&block)
+
+      # ignore loglevel per default (it's even set for whits)
+      if !@translations[:loglevel]
+        ignore :loglevel
+      end
+
       self.class.register self
     end
 
