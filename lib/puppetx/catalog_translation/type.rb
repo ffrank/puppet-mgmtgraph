@@ -19,22 +19,44 @@ module CatalogTranslation
       # for use by the blocks
       @resource = resource
 
+      seen = {}
+
       @translations.each do |attr,translation|
+        # cache for reference below
+        seen[attr] = true
+
+        # dropped attribute is used in the catalog
+        if translation[:ignore] && resource.parameters[attr]
+          translation[:block].call(resource[attr]) if translation[:block]
+          next
+        end
+
+        # transform attribute name (onlyif -> ifcmd)
         title = translation[:alias] || attr
 
+        # spawn additional attributes (watchcmd...)
         if translation[:spawned]
           result[title] = translation[:block].call
           next
         end
 
+        # non-spawned attributes must exist in the source catalog
         next if !resource.parameters[attr]
 
+        # actual translation
         result[title] = if translation.has_key?(:block)
           translation[:block].call(resource[attr])
         else
           resource[attr]
         end
       end
+
+      # warn about unmentioned attributes
+      resource.parameters.keys.each do |attr|
+        next if seen[attr]
+        Puppet.warning "cannot translate: #{resource.ref} { #{attr} => #{resource[attr].inspect} } (attribute is ignored)"
+      end
+
       @resource = nil
       result
     end
@@ -108,6 +130,17 @@ module CatalogTranslation
       attributes.each do |attribute|
         carry(attribute) { yield }
         @translations[attribute][:spawned] = true
+      end
+    end
+
+    def ignore(*attributes, &block)
+      attributes.each do |attribute|
+        if block_given?
+          carry(attribute) { |x| block.call(x) }
+        else
+          carry attribute
+        end
+        @translations[attribute][:ignore] = true
       end
     end
 
