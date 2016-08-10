@@ -2,15 +2,14 @@
 sudo: false
 language: ruby
 rvm:
+  - "2.1.0"
   - "2.0.0"
-  - "1.9.3"
-  - jruby-19mode # JRuby in 1.9 mode
 script:
   - bundle exec rspec spec
 matrix:
   fast_finish: true
   include:
-  - rvm: 2.0.0
+  - rvm: 2.1.0
     env: PUPPET_GEM_VERSION="~> 4.0"
-  - rvm: 1.9.3
+  - rvm: 2.0.0
     env: PUPPET_GEM_VERSION="~> 3.0"
