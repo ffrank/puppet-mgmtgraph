@@ -53,6 +53,7 @@ describe "PuppetX::CatalogTranslation" do
 
     it "does not include unsupported resources in the result hash" do
       # make sure that the file translator is not loaded
+      PuppetX::CatalogTranslation::Type.expects(:load_translator).with(:default_translation)
       PuppetX::CatalogTranslation::Type.expects(:load_translator).with(:file)
       result = PuppetX::CatalogTranslation.to_mgmt(file_catalog)
       expect(result['resources']).to_not include 'file'
@@ -68,11 +69,12 @@ describe "PuppetX::CatalogTranslation" do
 
     it "discards edges that connect to an ignored resource" do
       # load file translator before stubbing
-      PuppetX::CatalogTranslation::Type.translation_for(:file)
+      #PuppetX::CatalogTranslation::Type.translation_for(:file)
       # make sure that no notify translator is loaded
-      PuppetX::CatalogTranslation::Type.expects(:load_translator).with(:notify).at_least_once
+      #PuppetX::CatalogTranslation::Type.expects(:load_translator).with(:notify).at_least_once
       result = PuppetX::CatalogTranslation.to_mgmt(edge_catalog)
-      expect(result['edges'].length).to be 1
+      #raise result['edges'].inspect
+      expect(result['edges'].length).to eq(1)
       expect(result['edges'][0]).to_not include(
         'to' => { 'kind' => 'notify', 'name' => 'this will not translate' },
       )
@@ -92,10 +94,12 @@ describe "PuppetX::CatalogTranslation" do
       end
     end
 
-    [ :notify, :resources, :cron ].each do |resource_type|
-      it "returns nil when given a #{resource_type} reference" do
+    [ :tidy, :resources, :cron ].each do |resource_type|
+      it "returns a hash representation of an exec when given a #{resource_type} reference" do
         vertex = Puppet::Type.type(resource_type).new({ :name => 'cron' })
-        expect(PuppetX::CatalogTranslation.translate_vertex(vertex)).to be nil
+        result = PuppetX::CatalogTranslation.translate_vertex(vertex)
+        expect(result).to be_a Hash
+        expect(result[:kind]).to be :exec
       end
     end
 
