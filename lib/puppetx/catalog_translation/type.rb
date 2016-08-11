@@ -1,12 +1,13 @@
 module PuppetX
 module CatalogTranslation
   class Type
-    attr_reader :name
+    attr_reader :name, :output
 
     @instances = {}
 
     def initialize(name,&block)
       @name = name
+      @output = name # can be overridden from DSL
       @translations = {}
       @custom_title = false
       instance_eval(&block)
@@ -65,10 +66,6 @@ module CatalogTranslation
 
       @resource = nil
       result
-    end
-
-    def output
-      @output || @name
     end
 
     def self.translation_for(type)
@@ -151,7 +148,6 @@ module CatalogTranslation
     end
 
     def emit(output)
-      raise "emit has been called twice for #{name}" if @output
       @output = output
     end
 

@@ -15,6 +15,7 @@ module PuppetX::CatalogTranslation
 
     catalog.relationship_graph.vertices.each do |res|
       next unless translator = PuppetX::CatalogTranslation::Type.translation_for(res.type)
+      next unless translator.output
       result[:resources][translator.output] ||= []
       result[:resources][translator.output] << translator.translate!(res)
     end
@@ -36,6 +37,7 @@ module PuppetX::CatalogTranslation
     type = vertex.type
     return nil unless translator = PuppetX::CatalogTranslation::Type.translation_for(type)
     type = translator.output
+    return nil unless type
     title = translator.title(vertex)
     return { :kind => type, :name => title }
   end
