@@ -10,6 +10,7 @@ module CatalogTranslation
       @output = name # can be overridden from DSL
       @translations = {}
       @custom_title = false
+      @catch_all = false
       instance_eval(&block)
 
       # ignore loglevel per default (it's even set for whits)
@@ -58,10 +59,12 @@ module CatalogTranslation
         end
       end
 
-      # warn about unmentioned attributes
-      resource.parameters.keys.each do |attr|
-        next if seen[attr]
-        Puppet.warning "cannot translate: #{resource.ref} { #{attr} => #{resource[attr].inspect} } (attribute is ignored)"
+      if !@catch_all
+        # warn about unmentioned attributes
+        resource.parameters.keys.each do |attr|
+          next if seen[attr]
+          Puppet.warning "cannot translate: #{resource.ref} { #{attr} => #{resource[attr].inspect} } (attribute is ignored)"
+        end
       end
 
       @resource = nil
@@ -153,6 +156,10 @@ module CatalogTranslation
 
     def override_title
       @custom_title = true
+    end
+
+    def catch_all
+      @catch_all = true
     end
 
   end

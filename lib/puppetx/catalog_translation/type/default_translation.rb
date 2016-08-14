@@ -3,6 +3,8 @@ PuppetX::CatalogTranslation::Type.new :default_translation do
 
   override_title
 
+  catch_all
+
   spawn :name do
     @resource.type.to_s.capitalize + ":" + @resource[:name]
   end
