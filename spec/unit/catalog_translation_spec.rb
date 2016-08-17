@@ -51,12 +51,10 @@ describe "PuppetX::CatalogTranslation" do
       PuppetX::CatalogTranslation.to_mgmt(file_catalog)
     end
 
-    it "does not include unsupported resources in the result hash" do
-      # make sure that the file translator is not loaded
-      PuppetX::CatalogTranslation::Type.expects(:load_translator).with(:default_translation)
-      PuppetX::CatalogTranslation::Type.expects(:load_translator).with(:file)
-      result = PuppetX::CatalogTranslation.to_mgmt(file_catalog)
-      expect(result['resources']).to_not include 'file'
+    it "does not include dropped resources in the result hash" do
+      result = PuppetX::CatalogTranslation.to_mgmt(notify_catalog)
+      expect(result['resources']).to_not include 'notify'
+      expect(result['resources']).to_not include 'exec'
     end
 
     it "keeps dependency edges between supported resources" do
