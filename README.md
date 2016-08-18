@@ -62,8 +62,8 @@ Resources of unsupported types are rendered into `exec` vertices of the form
 
 ```yaml
 exec:
-- name: Type:original-resource-title
-  cmd: puppet yamlresource 'type' '{ param => value, ... }'
+- name: <type>:title
+  cmd: puppet yamlresource <type> 'title' '{ param => value, ... }'
   watchcmd: puppet yamlresource ... --noop | grep -q ^Notice:
 ```
 
