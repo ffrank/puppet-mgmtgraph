@@ -36,4 +36,12 @@ describe "PuppetX::CatalogTranslation" do
     graph = PuppetX::CatalogTranslation.to_mgmt(catalog)
     expect(graph['resources']['service'][0]).to_not include('startup')
   end
+
+  it "generates `exec puppet yamlresource` vertices for untranslatable resources" do
+    catalog = resource_catalog("cron { 'spec': ensure => present, command => 'rspec spec', user => 'root', minute => 9 }")
+    graph = PuppetX::CatalogTranslation.to_mgmt(catalog)
+    expect(graph['resources']).to_not include('cron')
+    expect(graph['resources']).to     include('exec')
+    expect(graph['resources']['exec'][0]['cmd']).to match(/^puppet yamlresource cron 'spec'/)
+  end
 end
