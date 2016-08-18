@@ -1,5 +1,15 @@
 # Alpha releases
 
+#### 0.3.0 2016-08-19
+
+ * turn resources that `mgmt` does not support into `exec puppet yamlresource` vertices
+ * print warnings about attributes that cannot be translated
+ * drop test coverage with Ruby 1.9.3
+ * ignore `notify` resources in the input
+ * adopt a dependency on the `ffrank-yamlresource` module
+
+The idea to handle unsupported resources this way is from Daniele Sluijters (@daenney).
+
 #### 0.2.3 2016-07-12
 
  * (#1) support relationships with classes and insances of defined types
