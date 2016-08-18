@@ -44,6 +44,9 @@ Finally, run the graph through [mgmt](https://github.com/purpleidea/mgmt/)
 
 ## Limitations
 
+Translation of virtual and exported resources is untested. Containment of supported resources
+in classes and defined types should work.
+
 The set of supported catalog elements is still quite small:
 
  * file resources
@@ -51,32 +54,21 @@ The set of supported catalog elements is still quite small:
  * service resources
  * package resources
 
-Resources of other types are silently dropped.
+For most of these, `mgmt` does not support all available properties and parameters.
+Whenever an attribute is ignored because of that, a warning message is printed during translation.
+There might be edge cases were this does not work reliably.
 
-Translation of virtual and exported resources is untested. Containment of supported resources
-in classes and defined types should work.
+Resources of unsupported types are rendered into `exec` vertices of the form
 
-Basically, a supported manifest can currently look like the following:
-
-```puppet
-    class x { file { 'd': } }
-
-    define thing($file=$name) { file { "/tmp/$file": ... } }
-
-    include x
-
-    package { 'x': ... }
-    ->
-    file { 'a': ... }
-
-    thing { 'f': file => 'f-thing', }
-    ->
-    Class['x']
-    ->
-    exec { 'b': ... }
-    ->
-    service { 'c': require => File['a'], ... }
+```yaml
+exec:
+- name: Type:original-resource-title
+  cmd: puppet yamlresource 'type' '{ param => value, ... }'
+  watchcmd: puppet yamlresource ... --noop | grep -q ^Notice:
 ```
+
+This means that testing the sync state of such a resource requires `mgmt` to launch a `puppet yamlresource` process.
+If that reports a change in `noop` mode, another `puppet yamlresource` is launched to perform the sync.
 
 ## Compatibility
 
@@ -86,7 +78,6 @@ Supports `mgmt` 0.0.3 (no earlier releases)
 
 ## TODO
 
-* more flexibility in the DSL
 * easier DSL (e.g. add a method to get at the namevar)
-* general fallback support using `puppet resource` (a.k.a. the Daenny hack)
 * support for export and import of resources (if possible)
+* enhance performance when delegating resources to Puppet
