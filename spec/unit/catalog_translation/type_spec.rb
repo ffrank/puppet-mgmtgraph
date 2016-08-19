@@ -8,14 +8,14 @@ describe "PuppetX::CatalogTranslation::Type" do
   describe "#translate!" do
     it "emits a warning about unhandled resource attributes" do
       translator = PuppetX::CatalogTranslation::Type.translation_for(:service)
-      resource = Puppet::Type.type(:service).new(:name => 'spec', :hasrestart => true)
+      resource = Puppet::Type.type(:service).new(:name => 'spec', :hasrestart => true, :provider => 'systemd' )
       Puppet.expects(:warning).with(regexp_matches /cannot translate.*hasrestart/)
       translator.translate!(resource)
     end
 
     it "emits no warning for ignored resource attributes" do
       translator = PuppetX::CatalogTranslation::Type.translation_for(:service)
-      resource = Puppet::Type.type(:service).new(:name => 'spec', :loglevel => :notice)
+      resource = Puppet::Type.type(:service).new(:name => 'spec', :loglevel => :notice, :provider => 'systemd' )
       Puppet.expects(:warning).never
       translator.translate!(resource)
     end
