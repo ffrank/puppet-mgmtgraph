@@ -80,7 +80,7 @@ module PuppetX::CatalogTranslation
     end
 
     ignore :source_permissions do |value|
-      if value != 'ignore'
+      if value != :ignore
         Puppet.warning "#{@resource.ref} does not ignore source permissions, which does not translate."
       end
     end
