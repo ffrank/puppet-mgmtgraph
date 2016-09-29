@@ -65,18 +65,19 @@ describe "PuppetX::CatalogTranslation" do
       )
     end
 
-    it "discards edges that connect to an ignored resource" do
-      # load file translator before stubbing
-      #PuppetX::CatalogTranslation::Type.translation_for(:file)
-      # make sure that no notify translator is loaded
-      #PuppetX::CatalogTranslation::Type.expects(:load_translator).with(:notify).at_least_once
-      result = PuppetX::CatalogTranslation.to_mgmt(edge_catalog)
-      #raise result['edges'].inspect
-      expect(result['edges'].length).to eq(1)
-      expect(result['edges'][0]).to_not include(
-        'to' => { 'kind' => 'notify', 'name' => 'this will not translate' },
-      )
-    end
+#    # TODO: bring this back if and when we have ignored resources again
+#    it "discards edges that connect to an ignored resource" do
+#      # load file translator before stubbing
+#      #PuppetX::CatalogTranslation::Type.translation_for(:file)
+#      # make sure that no notify translator is loaded
+#      #PuppetX::CatalogTranslation::Type.expects(:load_translator).with(:notify).at_least_once
+#      result = PuppetX::CatalogTranslation.to_mgmt(edge_catalog)
+#      #raise result['edges'].inspect
+#      expect(result['edges'].length).to eq(1)
+#      expect(result['edges'][0]).to_not include(
+#        'to' => { 'kind' => 'notify', 'name' => 'this will not translate' },
+#      )
+#    end
 
     it "converts ruby symbols in the result to strings" do
       PuppetX::CatalogTranslation.expects(:desymbolize)
