@@ -30,7 +30,7 @@ PuppetX::CatalogTranslation::Type.new :service do
 
   ignore :pattern do |value|
     if value != @resource[:name]
-      Puppet.warning "#{@resource.ref} uses the process name pattern '#{value}', which mgmt does not support."
+      unsupported "#{@resource.ref} uses the process name pattern '#{value}', which mgmt does not support."
     end
   end
 end

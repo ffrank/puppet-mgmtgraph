@@ -27,7 +27,7 @@ PuppetX::CatalogTranslation::Type.new :package do
 
   ignore :reinstall_on_refresh do |value|
     if value != :false
-      Puppet.warning "#{@resource.ref} will reinstall itself when notified, which mgmt does not support."
+      unsupported "#{@resource.ref} will reinstall itself when notified, which mgmt does not support."
     end
   end
 end

@@ -162,6 +162,14 @@ module CatalogTranslation
       @catch_all = true
     end
 
+    def unsupported(message, level = :warning)
+      case level
+      when :warning, :err
+        Puppet.send(level, message)
+      else
+        raise "invalid message level '#{level}' in #{self.class.name}#unsupported (while translating #{@resource.inspect})"
+      end
+    end
   end
 end
 end

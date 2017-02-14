@@ -45,4 +45,23 @@ describe "PuppetX::CatalogTranslation::Type" do
     end
                
   end
+
+  describe "#unsupported" do
+    it "sends warnings to the logging subsystem" do
+      translator = PuppetX::CatalogTranslation::Type.translation_for(:service)
+      Puppet.expects(:warning)
+      translator.send :unsupported, "This is a warning"
+    end
+
+    it "sends errors to the logging subsystem" do
+      translator = PuppetX::CatalogTranslation::Type.translation_for(:service)
+      Puppet.expects(:err)
+      translator.send :unsupported, "This is an error", :err
+    end
+
+    it "does not accept invalid message levels" do
+      translator = PuppetX::CatalogTranslation::Type.translation_for(:service)
+      expect {translator.send :unsupported, "This is an error", :initialize}.to raise_error(/initialize/)
+    end
+  end
 end
