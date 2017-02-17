@@ -12,16 +12,22 @@ Puppet::Face.define(:mgmtgraph, '0.0.1') do
   action :print do
     default
     summary "Print the graph in YAML format"
+    option "--conservative" do
+      summary "Emit `exec puppet resource` nodes in case of translation limitations"
+    end
 
-    when_invoked do |*args|
-      graph = Puppet::Face[@name, @version].find
+    when_invoked do |options|
+      graph = Puppet::Face[@name, @version].find(:conservative => options[:conservative])
       puts YAML.dump graph
     end
   end
 
   action :find do
     summary "Return the graph in hash format"
-    when_invoked do |*args|
+    option "--conservative" do
+      summary "Emit `exec puppet resource` nodes in case of translation limitations"
+    end
+    when_invoked do |options|
 
       # suppress performance message from the compiler
       if Puppet[:log_level] == "notice"
@@ -31,6 +37,12 @@ Puppet::Face.define(:mgmtgraph, '0.0.1') do
       catalog = Puppet::Face[:catalog, "0.0"].find
       if reset_log_level
         Puppet[:log_level] = "notice"
+      end
+
+      if options[:conservative]
+	PuppetX::CatalogTranslation.set_mode(:conservative)
+      else
+	PuppetX::CatalogTranslation.set_mode(:optimistic)
       end
 
       PuppetX::CatalogTranslation.to_mgmt(catalog.to_ral)

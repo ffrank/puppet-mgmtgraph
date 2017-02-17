@@ -26,6 +26,18 @@ describe "puppet mgmtgraph" do
       PuppetX::CatalogTranslation.expects(:to_mgmt)
       subject.find
     end
+
+    it "sets the translation mode to optimistic by default" do
+      Puppet::Face[:catalog, catalog_face_version].stubs(:find).returns Puppet::Resource::Catalog.new
+      PuppetX::CatalogTranslation.expects(:set_mode).with(:optimistic)
+      subject.find
+    end
+
+    it "sets the translation mode to conservative" do
+      Puppet::Face[:catalog, catalog_face_version].stubs(:find).returns Puppet::Resource::Catalog.new
+      PuppetX::CatalogTranslation.expects(:set_mode).with(:conservative)
+      subject.find(:conservative => true)
+    end
   end
 
 end

@@ -26,6 +26,8 @@ module CatalogTranslation
       # temporarily set @resource to the parameter
       # for use by the blocks
       @resource = resource
+      # initially, mark this translation as clean
+      @clean_translation = true
 
       seen = {}
 
@@ -63,12 +65,19 @@ module CatalogTranslation
         # warn about unmentioned attributes
         resource.parameters.keys.each do |attr|
           next if seen[attr]
-          Puppet.warning "cannot translate: #{resource.ref} { #{attr} => #{resource[attr].inspect} } (attribute is ignored)"
+          unsupported "cannot translate: #{resource.ref} { #{attr} => #{resource[attr].inspect} } (attribute is ignored)"
+        end
+
+        # if a regular (not the catch-all) translation is unclean,
+        # the user might wish to defer to the catch-all
+        if !@clean_translation && PuppetX::CatalogTranslation.mode == :conservative
+          @resource = nil
+          return PuppetX::CatalogTranslation::Type.translation_for(:default_translation).translate!(resource)
         end
       end
 
       @resource = nil
-      result
+      return @output, result
     end
 
     def self.translation_for(type)
@@ -163,12 +172,24 @@ module CatalogTranslation
     end
 
     def unsupported(message, level = :warning)
+      if PuppetX::CatalogTranslation.mode == :conservative
+        # do not duplicate the message
+        if @clean_translation
+          Puppet.warning("emitting a `exec puppet resource` node for #{@resource.ref}, reason(s):")
+        end
+        mark_as_unclean
+      end
+
       case level
       when :warning, :err
         Puppet.send(level, message)
       else
         raise "invalid message level '#{level}' in #{self.class.name}#unsupported (while translating #{@resource.inspect})"
       end
+    end
+
+    def mark_as_unclean
+      @clean_translation = false
     end
   end
 end

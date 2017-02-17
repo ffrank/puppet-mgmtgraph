@@ -5,6 +5,8 @@ require 'puppetx/catalog_translation/type'
 module PuppetX; end
 
 module PuppetX::CatalogTranslation
+  @mode = :optimistic
+
   def self.to_mgmt(catalog)
     result = {
       :graph => catalog.name,
@@ -13,16 +15,24 @@ module PuppetX::CatalogTranslation
       :edges => [],
     }
 
+    resource_table = {}
+
     catalog.relationship_graph.vertices.each do |res|
+      # initially mark as untranslated
+      resource_table[res] = nil
       next unless translator = PuppetX::CatalogTranslation::Type.translation_for(res.type)
       next unless translator.output
-      result[:resources][translator.output] ||= []
-      result[:resources][translator.output] << translator.translate!(res)
+
+      type, data = translator.translate!(res)
+      result[:resources][type] ||= []
+      result[:resources][type] << data
+      # cache the translation result
+      resource_table[res] = { :kind => type, :name => data[:name] }
     end
 
     catalog.relationship_graph.edges.each do |edge|
-      from = translate_vertex(edge.source)
-      to = translate_vertex(edge.target)
+      from = resource_table[edge.source]
+      to = resource_table[edge.target]
 
       next unless from and to
       # deterministic edge naming is important
@@ -31,15 +41,6 @@ module PuppetX::CatalogTranslation
     end
 
     desymbolize(result)
-  end
-
-  def self.translate_vertex(vertex)
-    type = vertex.type
-    return nil unless translator = PuppetX::CatalogTranslation::Type.translation_for(type)
-    type = translator.output
-    return nil unless type
-    title = translator.title(vertex)
-    return { :kind => type, :name => title }
   end
 
   def self.desymbolize(it)
@@ -57,5 +58,18 @@ module PuppetX::CatalogTranslation
     else
       it
     end
+  end
+
+  def self.set_mode(mode)
+    case mode
+    when :conservative, :optimistic
+      @mode = mode
+    else
+      raise "cannot set #{self.name} to invalid '#{mode}' mode"
+    end
+  end
+
+  def self.mode
+    return @mode
   end
 end

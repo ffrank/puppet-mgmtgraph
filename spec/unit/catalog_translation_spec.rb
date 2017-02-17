@@ -85,32 +85,6 @@ describe "PuppetX::CatalogTranslation" do
     end
   end
 
-  describe "::translate_vertex" do
-    [ :file, :exec, :service ].each do |resource_type|
-      it "returns a hash when given a #{resource_type} reference" do
-        vertex = Puppet::Type.type(resource_type).new({ :name => '/spec' })
-        expect(PuppetX::CatalogTranslation.translate_vertex(vertex)).to be_a Hash
-      end
-    end
-
-    [ :tidy, :resources, :cron ].each do |resource_type|
-      it "returns a hash representation of an exec when given a #{resource_type} reference" do
-        vertex = Puppet::Type.type(resource_type).new({ :name => 'cron' })
-        result = PuppetX::CatalogTranslation.translate_vertex(vertex)
-        expect(result).to be_a Hash
-        expect(result[:kind]).to be :exec
-      end
-    end
-
-    it "maps the type of the referenced resource appropriately" do
-      PuppetX::CatalogTranslation::Type.new :file do
-        emit :mgmt_type
-      end
-      vertex = Puppet::Type.type(:file).new({ :name => '/spec' })
-      expect(PuppetX::CatalogTranslation.translate_vertex(vertex)[:kind]).to be == :mgmt_type
-    end
-  end
-
   describe "::desymbolize" do
     { 'a string' => 'spec',
       'a symbol' => :spec,
@@ -129,6 +103,22 @@ describe "PuppetX::CatalogTranslation" do
             expect(element).to be_a String
           end
         end
+      end
+    end
+  end
+
+  describe "::set_mode" do
+    it "accepts value :optimistic" do
+      expect { PuppetX::CatalogTranslation.set_mode(:optimistic) }.to_not raise_error
+    end
+
+    it "accepts value :conservative" do
+      expect { PuppetX::CatalogTranslation.set_mode(:conservative) }.to_not raise_error
+    end
+
+    it "does not accept unknown parameter values" do
+      [ :great, :weird, :amazing, :elastic ].each do |param|
+        expect { PuppetX::CatalogTranslation.set_mode(param) }.to raise_error(/invalid .* mode/)
       end
     end
   end
