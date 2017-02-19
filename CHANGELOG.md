@@ -1,5 +1,10 @@
 # Alpha releases
 
+#### 0.3.1 2017-02-20
+
+ * translate `notify` resources to mgmt's `msg`
+ * add the `--conservative` flag
+
 #### 0.3.0 2016-08-19
 
  * turn resources that `mgmt` does not support into `exec puppet yamlresource` vertices
