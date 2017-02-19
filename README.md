@@ -42,6 +42,26 @@ Finally, run the graph through [mgmt](https://github.com/purpleidea/mgmt/)
 
     mgmt run --file /tmp/mygraph.yaml
 
+### Conservative mode
+
+In its default ("optimistic") mode, `puppet mgmtgraph` will emit as many native `mgmt` resources as possible.
+This will drop some attribute values to the floor, however. Consider the following simple manifest:
+
+    file { "/tmp/exchange_file": ensure => file, seltype => "tmp_t" }
+
+As long as `mgmt` has no SELinux support, it can create and maintain the file, but will ignore its SEL context.
+In a more complex manifest context, this is likely inadequate to prepare the system for the synchronization
+of all dependent resources.
+
+In order to make sure that `mgmt` applies such a catalog correctly, it has to resort to the `puppet resource`
+workaround that is used for resources that are not supported by `mgmt` at all. This behavior is now available
+in the form of the `conservative` mode:
+
+    puppet mgmtgraph --conservative --code 'file { "/tmp/exchange_file": ensure => file, seltype => "tmp_t" }'
+
+The `mgmt` integration has no way of passing this flag. However, eventually this mode will probably become
+the default, with an optional `--optimistic` flag to revert to the current default.
+
 ## Limitations
 
 Translation of virtual and exported resources is untested. Containment of supported resources
