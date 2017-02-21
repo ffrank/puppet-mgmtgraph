@@ -4,6 +4,16 @@ module PuppetX::CatalogTranslation
       @resource.title
     end
 
+    carry :owner
+
+    carry :group
+
+    carry :mode
+
+    carry :recurse
+
+    carry :force
+
     spawn :path do
       if @resource[:ensure] == :directory
         @resource[:name] + "/"
