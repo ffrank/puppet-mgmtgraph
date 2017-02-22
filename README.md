@@ -54,8 +54,8 @@ In a more complex manifest context, this is likely inadequate to prepare the sys
 of all dependent resources.
 
 In order to make sure that `mgmt` applies such a catalog correctly, it has to resort to the `puppet resource`
-workaround that is used for resources that are not supported by `mgmt` at all. This behavior is now available
-in the form of the `conservative` mode:
+workaround that is used for resources that are not supported by `mgmt` at all (see below).
+This behavior is now available in the form of the `conservative` mode:
 
     puppet mgmtgraph --conservative --code 'file { "/tmp/exchange_file": ensure => file, seltype => "tmp_t" }'
 
@@ -73,6 +73,7 @@ The set of supported catalog elements is still quite small:
  * exec resources
  * service resources
  * package resources
+ * notify resources
 
 For most of these, `mgmt` does not support all available properties and parameters.
 Whenever an attribute is ignored because of that, a warning message is printed during translation.
@@ -89,6 +90,9 @@ exec:
 
 This means that testing the sync state of such a resource requires `mgmt` to launch a `puppet yamlresource` process.
 If that reports a change in `noop` mode, another `puppet yamlresource` is launched to perform the sync.
+
+In [conservative mode](#conservative-mode), this technique is also applied to resources that are generally
+translatable, but raise warnings about specific parameters or values.
 
 ## Compatibility
 
