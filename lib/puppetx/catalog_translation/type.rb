@@ -172,22 +172,19 @@ module CatalogTranslation
     end
 
     def translation_warning(message)
+      if PuppetX::CatalogTranslation.mode == :conservative
+        mark_as_unclean
+      end
       unsupported message, :warning
     end
 
     def translation_failure(message)
+      # a failure should always lead to a handed off resource
+      mark_as_unclean
       unsupported message, :err
     end
 
     def unsupported(message, level = :warning)
-      if PuppetX::CatalogTranslation.mode == :conservative
-        # do not duplicate the message
-        if @clean_translation
-          Puppet.warning("emitting a `exec puppet resource` node for #{@resource.ref}, reason(s):")
-        end
-        mark_as_unclean
-      end
-
       case level
       when :warning, :err
         Puppet.send(level, message)
@@ -197,6 +194,8 @@ module CatalogTranslation
     end
 
     def mark_as_unclean
+      return unless @clean_translation
+      Puppet.warning("emitting a `exec puppet resource` node for #{@resource.ref}, reason(s):")
       @clean_translation = false
     end
   end

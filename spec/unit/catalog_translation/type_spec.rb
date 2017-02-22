@@ -68,12 +68,34 @@ describe "PuppetX::CatalogTranslation::Type" do
       translator.expects(:unsupported).with(anything, :warning)
       translator.send :translation_warning, "This is a spec warning"
     end
+
+    it "marks the translation as unclean in conservative mode" do
+      PuppetX::CatalogTranslation.stubs(:mode).returns(:conservative)
+      translator.expects(:mark_as_unclean)
+
+      # TODO: add a method to access @resource so that we
+      # don't have to rely on translate! for this test
+      # (currently it will fail otherwise because @resource is nil)
+      resource = Puppet::Type.type(:service).new(:name => 'spec', :hasrestart => true, :provider => 'systemd')
+      translator.translate!(resource)
+    end
   end
 
   describe "#translation_failure" do
     it "calls #unsupported at error level" do
       translator.expects(:unsupported).with(anything, :err)
       translator.send :translation_failure, "This is a spec error"
+    end
+
+    it "marks the translation as unclean" do
+      exec_translator = PuppetX::CatalogTranslation::Type.translation_for(:exec)
+      exec_translator.expects(:mark_as_unclean)
+
+      # TODO: add a method to access @resource so that we
+      # don't have to rely on translate! for this test
+      # (currently it will fail otherwise because @resource is nil)
+      resource = Puppet::Type.type(:exec).new(:name => '/bin/spec', :returns => "1")
+      exec_translator.translate!(resource)
     end
   end
 
@@ -91,7 +113,9 @@ describe "PuppetX::CatalogTranslation::Type" do
     it "does not accept invalid message levels" do
       expect {translator.send :unsupported, "This is an error", :initialize}.to raise_error(/initialize/)
     end
+  end
 
+  describe "#mark_as_unclean" do
     it "warns about conservative mode only once" do
       PuppetX::CatalogTranslation.stubs(:mode).returns(:conservative)
       Puppet.expects(:warning).with(regexp_matches(/exec puppet resource/))
@@ -104,15 +128,5 @@ describe "PuppetX::CatalogTranslation::Type" do
       translator.translate!(resource)
     end
 
-    it "marks the translation as unclean" do
-      PuppetX::CatalogTranslation.stubs(:mode).returns(:conservative)
-      translator.expects(:mark_as_unclean)
-
-      # TODO: add a method to access @resource so that we
-      # don't have to rely on translate! for this test
-      # (currently it will fail otherwise because @resource is nil)
-      resource = Puppet::Type.type(:service).new(:name => 'spec', :hasrestart => true, :provider => 'systemd')
-      translator.translate!(resource)
-    end
   end
 end
