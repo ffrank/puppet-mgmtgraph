@@ -72,12 +72,7 @@ describe "PuppetX::CatalogTranslation::Type" do
     it "marks the translation as unclean in conservative mode" do
       PuppetX::CatalogTranslation.stubs(:mode).returns(:conservative)
       translator.expects(:mark_as_unclean)
-
-      # TODO: add a method to access @resource so that we
-      # don't have to rely on translate! for this test
-      # (currently it will fail otherwise because @resource is nil)
-      resource = Puppet::Type.type(:service).new(:name => 'spec', :hasrestart => true, :provider => 'systemd')
-      translator.translate!(resource)
+      translator.send :translation_warning, "This is a spec warning"
     end
   end
 
@@ -88,14 +83,8 @@ describe "PuppetX::CatalogTranslation::Type" do
     end
 
     it "marks the translation as unclean" do
-      exec_translator = PuppetX::CatalogTranslation::Type.translation_for(:exec)
-      exec_translator.expects(:mark_as_unclean)
-
-      # TODO: add a method to access @resource so that we
-      # don't have to rely on translate! for this test
-      # (currently it will fail otherwise because @resource is nil)
-      resource = Puppet::Type.type(:exec).new(:name => '/bin/spec', :returns => "1")
-      exec_translator.translate!(resource)
+      translator.expects(:mark_as_unclean)
+      translator.send :translation_failure, "This is a spec error"
     end
   end
 
@@ -118,14 +107,12 @@ describe "PuppetX::CatalogTranslation::Type" do
   describe "#mark_as_unclean" do
     it "warns about conservative mode only once" do
       PuppetX::CatalogTranslation.stubs(:mode).returns(:conservative)
-      Puppet.expects(:warning).with(regexp_matches(/exec puppet resource/))
-      Puppet.stubs(:warning).with(regexp_matches(/pattern|hasrestart/))
+      translator.stubs(:resource_description).returns('Service[spec]')
 
-      # TODO: add a method to access @resource so that we
-      # don't have to rely on translate! for this test
-      # (currently it will fail otherwise because @resource is nil)
-      resource = Puppet::Type.type(:service).new(:name => 'spec', :hasrestart => true, :provider => 'systemd', :pattern => 'x')
-      translator.translate!(resource)
+      translator.send :mark_as_clean
+      Puppet.expects(:warning).with(regexp_matches(/exec puppet resource/)).once
+      translator.send :mark_as_unclean
+      translator.send :mark_as_unclean
     end
 
   end

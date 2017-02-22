@@ -27,7 +27,7 @@ module CatalogTranslation
       # for use by the blocks
       @resource = resource
       # initially, mark this translation as clean
-      @clean_translation = true
+      mark_as_clean
 
       seen = {}
 
@@ -184,19 +184,31 @@ module CatalogTranslation
       unsupported message, :err
     end
 
+    def resource_description
+      if @resource
+        @resource.ref
+      else
+        '[no resource]'
+      end
+    end
+
     def unsupported(message, level = :warning)
       case level
       when :warning, :err
         Puppet.send(level, message)
       else
-        raise "invalid message level '#{level}' in #{self.class.name}#unsupported (while translating #{@resource.inspect})"
+        raise "invalid message level '#{level}' in #{self.class.name}#unsupported (while translating #{@resource.inspect if @resource})"
       end
     end
 
     def mark_as_unclean
       return unless @clean_translation
-      Puppet.warning("emitting a `exec puppet resource` node for #{@resource.ref}, reason(s):")
+      Puppet.warning("emitting a `exec puppet resource` node for #{resource_description}, reason(s):")
       @clean_translation = false
+    end
+
+    def mark_as_clean
+      @clean_translation = true
     end
   end
 end
