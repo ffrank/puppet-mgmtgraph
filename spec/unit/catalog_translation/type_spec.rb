@@ -61,9 +61,23 @@ describe "PuppetX::CatalogTranslation::Type" do
                
   end
 
-  describe "#unsupported" do
-    let(:translator) { PuppetX::CatalogTranslation::Type.translation_for(:service) }
+  let(:translator) { PuppetX::CatalogTranslation::Type.translation_for(:service) }
 
+  describe "#translation_warning" do
+    it "calls #unsupported at warning level" do
+      translator.expects(:unsupported).with(anything, :warning)
+      translator.send :translation_warning, "This is a spec warning"
+    end
+  end
+
+  describe "#translation_failure" do
+    it "calls #unsupported at error level" do
+      translator.expects(:unsupported).with(anything, :err)
+      translator.send :translation_failure, "This is a spec error"
+    end
+  end
+
+  describe "#unsupported" do
     it "sends warnings to the logging subsystem" do
       Puppet.expects(:warning)
       translator.send :unsupported, "This is a warning"

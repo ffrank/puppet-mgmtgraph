@@ -12,7 +12,7 @@ PuppetX::CatalogTranslation::Type.new :package do
     when :purged, :absent
       :uninstalled
     else
-      Puppet.err("#{@resource.ref} uses ensure => #{value} which currently cannot be translated for mgmt (defaulting to 'installed')")
+      translation_failure("#{@resource.ref} uses ensure => #{value} which currently cannot be translated for mgmt (defaulting to 'installed')")
       :installed
     end
   end
@@ -27,7 +27,7 @@ PuppetX::CatalogTranslation::Type.new :package do
 
   ignore :reinstall_on_refresh do |value|
     if value != :false
-      unsupported "#{@resource.ref} will reinstall itself when notified, which mgmt does not support."
+      translation_warning "#{@resource.ref} will reinstall itself when notified, which mgmt does not support."
     end
   end
 end

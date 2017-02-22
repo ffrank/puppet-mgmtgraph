@@ -41,10 +41,10 @@ module PuppetX::CatalogTranslation
       if @resource[:ensure] == :directory && !@resource[:source].nil?
         source = @resource[:source][0].sub(/^file:/, '')
         if @resource[:source].count > 1
-          unsupported "#{@resource.ref} uses multiple sources - this will not be translated", :err
+          translation_failure "#{@resource.ref} uses multiple sources - this will not be translated"
           ''
         elsif source =~ /^puppet:/
-          unsupported "#{@resource.ref} uses a puppet fileserver URL source - this will not be translated", :err
+          translation_failure "#{@resource.ref} uses a puppet fileserver URL source - this will not be translated"
           ''
         else
           source
@@ -57,12 +57,12 @@ module PuppetX::CatalogTranslation
     ignore :validate_replacement, :provider, :sourceselect, :show_diff, :checksum
 
     ignore :validate_cmd do
-      unsupported "#{@resource.ref} has a validate_cmd, which does not translate to mgmt. There will be no validation!"
+      translation_warning "#{@resource.ref} has a validate_cmd, which does not translate to mgmt. There will be no validation!"
     end
 
     ignore :purge do |value|
       if value
-        unsupported "#{@resource.ref} uses the purge attribute, which cannot be translated. Unmanaged content will be ignored."
+        translation_warning "#{@resource.ref} uses the purge attribute, which cannot be translated. Unmanaged content will be ignored."
       end
     end
 
@@ -71,33 +71,33 @@ module PuppetX::CatalogTranslation
       when false, nil
         nil
       when /^\./
-        unsupported "#{@resource.ref} uses local backups with the #{value} suffix, which mgmt does not support. There will be no backup copies!"
+        translation_warning "#{@resource.ref} uses local backups with the #{value} suffix, which mgmt does not support. There will be no backup copies!"
       else
-        unsupported "#{@resource.ref} uses the '#{value}' file bucket, which mgmt cannot do. There will be no backup copies!"
+        translation_warning "#{@resource.ref} uses the '#{value}' file bucket, which mgmt cannot do. There will be no backup copies!"
       end
     end
 
     ignore :replace do |value|
       if !value
-        unsupported "#{@resource.ref} sets replace => false, which is not available in mgmt. Existing file will be overwritten!"
+        translation_warning "#{@resource.ref} sets replace => false, which is not available in mgmt. Existing file will be overwritten!"
       end
     end
 
     ignore :links do |value|
       if value != :manage
-        unsupported "#{@resource.ref} is configured to follow symlinks, which does not translate."
+        translation_warning "#{@resource.ref} is configured to follow symlinks, which does not translate."
       end
     end
 
     ignore :source_permissions do |value|
       if value != :ignore
-        unsupported "#{@resource.ref} does not ignore source permissions, which does not translate."
+        translation_warning "#{@resource.ref} does not ignore source permissions, which does not translate."
       end
     end
 
     ignore :selinux_ignore_defaults do |value|
       if !value
-        unsupported "#{@resource.ref} respects selinux defaults, which will not happen from mgmt."
+        translation_warning "#{@resource.ref} respects selinux defaults, which will not happen from mgmt."
       end
     end
 

@@ -65,7 +65,7 @@ module CatalogTranslation
         # warn about unmentioned attributes
         resource.parameters.keys.each do |attr|
           next if seen[attr]
-          unsupported "cannot translate: #{resource.ref} { #{attr} => #{resource[attr].inspect} } (attribute is ignored)"
+          translation_warning "cannot translate: #{resource.ref} { #{attr} => #{resource[attr].inspect} } (attribute is ignored)"
         end
 
         # if a regular (not the catch-all) translation is unclean,
@@ -169,6 +169,14 @@ module CatalogTranslation
 
     def catch_all
       @catch_all = true
+    end
+
+    def translation_warning(message)
+      unsupported message, :warning
+    end
+
+    def translation_failure(message)
+      unsupported message, :err
     end
 
     def unsupported(message, level = :warning)

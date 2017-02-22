@@ -24,13 +24,13 @@ PuppetX::CatalogTranslation::Type.new :service do
 
   ignore :provider do |value|
     if value != :systemd
-      Puppet.err "#{@resource.ref} uses the #{value} provider, while mgmt will use systemd only."
+      translation_warning "#{@resource.ref} uses the #{value} provider, while mgmt will use systemd only."
     end
   end
 
   ignore :pattern do |value|
     if value != @resource[:name]
-      unsupported "#{@resource.ref} uses the process name pattern '#{value}', which mgmt does not support."
+      translation_warning "#{@resource.ref} uses the process name pattern '#{value}', which mgmt does not support."
     end
   end
 end
