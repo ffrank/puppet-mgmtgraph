@@ -23,13 +23,13 @@ PuppetX::CatalogTranslation::Type.new :exec do
 
   ignore :returns do |value|
     if value != %w{0}
-      translation_failure "#{@resource.ref} expects return code(s) other than 0, which mgmt does not support."
+      translation_failure "expects return code(s) other than 0, which mgmt does not support."
     end
   end
 
   ignore :tries do |value|
     if value > 1
-      translation_warning "#{@resource.ref} has #{value} tries, which mgmt will not use."
+      translation_warning "has #{value} tries, which mgmt will not use."
     end
   end
 end

@@ -65,7 +65,7 @@ module CatalogTranslation
         # warn about unmentioned attributes
         resource.parameters.keys.each do |attr|
           next if seen[attr]
-          translation_warning "cannot translate: #{resource.ref} { #{attr} => #{resource[attr].inspect} } (attribute is ignored)"
+          translation_warning "cannot translate attribute '#{attr} => #{resource[attr].inspect}', attribute is ignored"
         end
 
         # if a regular (not the catch-all) translation is unclean,
@@ -195,7 +195,7 @@ module CatalogTranslation
     def unsupported(message, level = :warning)
       case level
       when :warning, :err
-        Puppet.send(level, message)
+        Puppet.send(level, "#{resource_description} #{message}")
       else
         raise "invalid message level '#{level}' in #{self.class.name}#unsupported (while translating #{@resource.inspect if @resource})"
       end
