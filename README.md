@@ -100,6 +100,10 @@ Supports Puppet `3.x` and `4.x`.
 
 Supports `mgmt` 0.0.3 (no earlier releases)
 
+## Extending
+
+See the [DSL Guide](DSL.md).
+
 ## TODO
 
 * easier DSL (e.g. add a method to get at the namevar)
