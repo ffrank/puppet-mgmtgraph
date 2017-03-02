@@ -10,8 +10,8 @@ describe "PuppetX::CatalogTranslation::Type" do
       let(:translator) { PuppetX::CatalogTranslation::Type.translation_for(:service) }
       let(:resource) { Puppet::Type.type(:service).new(:name => 'spec', :hasrestart => true, :provider => 'systemd' ) }
 
-      it "emits a warning" do
-        Puppet.expects(:warning).with(regexp_matches /cannot translate.*hasrestart/)
+      it "emits an error" do
+        Puppet.expects(:err).with(regexp_matches /cannot translate.*hasrestart/)
         translator.translate!(resource)
       end
 

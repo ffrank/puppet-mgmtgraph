@@ -27,9 +27,10 @@ PuppetX::CatalogTranslation::Type.new :exec do
     end
   end
 
+  # TODO: perhaps spawn a retry metaparameter?
   ignore :tries do |value|
     if value > 1
-      translation_warning "has #{value} tries, which mgmt will not use."
+      translation_warning "has #{value} tries, which is not translated to mgmt."
     end
   end
 end

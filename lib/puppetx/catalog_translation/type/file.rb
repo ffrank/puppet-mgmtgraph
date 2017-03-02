@@ -54,6 +54,9 @@ module PuppetX::CatalogTranslation
       end
     end
 
+    # this is consumed in the spawn :content block above
+    ignore :source
+
     ignore :validate_replacement, :provider, :sourceselect, :show_diff, :checksum
 
     ignore :validate_cmd do
@@ -79,19 +82,19 @@ module PuppetX::CatalogTranslation
 
     ignore :replace do |value|
       if !value
-        translation_warning "sets replace => false, which is not available in mgmt. Existing file will be overwritten!"
+        translation_failure "sets replace => false, which is not available in mgmt."
       end
     end
 
     ignore :links do |value|
       if value != :manage
-        translation_warning "is configured to follow symlinks, which does not translate."
+        translation_failure "is configured to follow symlinks, which does not translate."
       end
     end
 
     ignore :source_permissions do |value|
       if value != :ignore
-        translation_warning "does not ignore source permissions, which does not translate."
+        translation_failure "does not ignore source permissions, which does not translate."
       end
     end
 

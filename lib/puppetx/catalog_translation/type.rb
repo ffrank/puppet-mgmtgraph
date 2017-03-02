@@ -62,10 +62,11 @@ module CatalogTranslation
       end
 
       if !@catch_all
-        # warn about unmentioned attributes
+        # unmatched resource attributes get raised as an error
+        # translators should explicitly ignore them to avoid this
         resource.parameters.keys.each do |attr|
           next if seen[attr]
-          translation_warning "cannot translate attribute '#{attr} => #{resource[attr].inspect}', attribute is ignored"
+          translation_failure "cannot translate attribute '#{attr} => #{resource[attr].inspect}', attribute is ignored"
         end
 
         # if a regular (not the catch-all) translation is unclean,
