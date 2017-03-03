@@ -83,7 +83,7 @@ A spawn rule generates an `mgmt` parameter that does not directly correlate to
 a Puppet attribute (i.e., cannot be handled by a `carry` or `rename` rule).
 
 Such rules usually base their output on the `@resource` member variable.
-(Please note that *all* types of rules can rely on this variable if necessary.)
+(Please note that *all* types of rules can make use of `@resource`.)
 
     spawn :content do
       if @resource[:ensure] == :directory && !@resource[:source].nil?
@@ -111,6 +111,10 @@ All `mgmt` resources need names, and usually, we just use Puppet's resource titl
 This **cannot** be expressed as a `rename` rule, because `@resource.title` is a
 method call on the Puppet resource object, not an access to an attribute. The title
 is special, and not part of `@resource.parameters`.
+
+(Note: The above rule can only be used safely for `mgmt` resource kinds that don't
+derive meaning from the `name` parameter. Resource kinds such as `pkg` use a different
+idiom, see the section on "Namevar" below.)
 
 ### `ignore` rules
 
@@ -163,7 +167,7 @@ Other resource types, such as `package` or `service`, have no such special namev
 and have a `name` parameter instead, which is not commonly used in manifests.
 
 Translating the value of such a namevar requires another translator DSL idiom,
-because some resources will use it explicitly, but not all. A `rename`
+because some input resources will use it explicitly, but not all. A `rename`
 or `carry` rule will not work reliably here, because it will only fire for
 input resources that specify the namevar as a parameter.
 
@@ -184,31 +188,33 @@ title or parameter). Most translators need the following rule:
 
 To give feedback to the user, rule blocks can use two DSL methods:
 
-1. `translation_warning` to indicate that some detail of the input resource
-will not be carried to `mgmt` properly. However, the managed system will
-still be brought into the desired state.
+1.  `translation_warning` to indicate that some detail of the input resource
+    will not be carried to `mgmt` properly. However, the managed system will
+    still be brought into the desired state.
+    
+    Examples for this include the `backup` parameter of the `file` resource, or its
+    `validate_cmd` parameter. Their behavior cannot be mimicked by `mgmt`, but this is
+    not critical to the correct behavior of the managed system.
+    
+        translation_warning "uses local backups, which mgmt will not create."
+    
+    The translation engine raises the message on the Puppet `warning` level.
 
-Examples for this the `backup` parameter of the `file` resource, or its
-`validate_cmd` parameter. Their behavior cannot be mimicked by `mgmt`, but this is
-not critical to the correct behavior of the managed system.
+2.  `translation_failure` is for indicating translation issues that will
+    lead to insufficient management by `mgmt`.
 
-    translation_warning "uses local backups, which mgmt will not create."
+    Examples include the Puppet `file`'s `replace` parameter, or `ensure`
+    values in `package` resources that describe the desired package
+    version.
+    
+        translation_failure "uses ensure => #{value} which currently cannot be translated for mgmt (defaulting to 'installed')"
 
-The translation engine raises the message on the Puppet `warning` level.
-
-2. `translation_failure` is for indicating translation issues that will
-lead to insufficient management by `mgmt`.
-
-Examples include the Puppet `file`'s `replace` parameter, or `ensure`
-values in `package` resources that describe the desired package
-version.
-
-    translation_failure "uses ensure => #{value} which currently cannot be translated for mgmt (defaulting to 'installed')"
-
-Note that a `translation_failure` does not imply the immediate
-termination of the ongoing catalog translation. This decision is
-up to the translator engine. (See "Conservative Mode" in the
-user documentation.)
+    The message will be raised on Puppet's `err` level.
+    
+    Note that a `translation_failure` does not imply the immediate
+    termination of the ongoing catalog translation. This decision is
+    up to the translator engine. (See "Conservative Mode" in the
+    user documentation.)
 
 ### Reporting best practices
 
