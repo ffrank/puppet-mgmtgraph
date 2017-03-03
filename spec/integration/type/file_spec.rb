@@ -23,6 +23,10 @@ describe "PuppetX::CatalogTranslation::Type::File" do
 
   it "reports an error when a file source is a URL" do
     catalog = resource_catalog("file { '/tmp/spec_dir': ensure => 'directory', source => 'puppet:///spec/dir' }")
+
+    # ignore Puppet 3 resource defaults:
+    Puppet.stubs(:err).with(regexp_matches(/ignore source permissions/))
+
     Puppet.expects(:err).with(regexp_matches(/puppet fileserver URL/))
     graph = PuppetX::CatalogTranslation.to_mgmt(catalog)
     expect(graph['resources']['file'][0]).to include('content' => '')
@@ -33,6 +37,10 @@ describe "PuppetX::CatalogTranslation::Type::File" do
                                   ensure => 'directory',
                                   source => [ '/tmp/source1', '/tmp/source2', ],
                                 }")
+
+    # ignore Puppet 3 resource defaults:
+    Puppet.stubs(:err).with(regexp_matches(/ignore source permissions/))
+
     Puppet.expects(:err).with(regexp_matches(/multiple sources/))
     graph = PuppetX::CatalogTranslation.to_mgmt(catalog)
     expect(graph['resources']['file'][0]).to include('content' => '')
