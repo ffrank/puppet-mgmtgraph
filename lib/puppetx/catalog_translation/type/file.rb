@@ -65,7 +65,7 @@ module PuppetX::CatalogTranslation
 
     ignore :purge do |value|
       if value
-        translation_warning "uses the purge attribute, which cannot be translated. Unmanaged content will be ignored."
+        translation_failure "uses the purge attribute, which cannot be translated. Unmanaged content will be ignored."
       end
     end
 
