@@ -18,6 +18,10 @@ module CatalogTranslation
         ignore :loglevel
       end
 
+      # ignore relational metaparameters, those are handled through the actual
+      # edges in the RAL graph
+      ignore :before, :require, :notify, :subscribe
+
       self.class.register self
     end
 
