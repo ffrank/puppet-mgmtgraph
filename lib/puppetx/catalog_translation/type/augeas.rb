@@ -17,7 +17,7 @@ PuppetX::CatalogTranslation::Type.new :augeas do
   ignore :incl
 
   rename :changes, :sets do |value|
-    result = value.map do |change|
+    result = [ value ].flatten.map do |change|
       unless change =~ /^set /
         translation_failure "has the change '#{change}', but only 'set' is supported. skipping..."
         {}
