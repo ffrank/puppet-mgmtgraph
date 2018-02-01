@@ -76,6 +76,7 @@ module CatalogTranslation
         # if a regular (not the catch-all) translation is unclean,
         # the user might wish to defer to the catch-all
         if !@clean_translation && PuppetX::CatalogTranslation.mode == :conservative
+          Puppet.warning("emitting a `exec puppet resource` node for #{resource_description} because of the errors above")
           @resource = nil
           return PuppetX::CatalogTranslation::Type.translation_for(:default_translation).translate!(resource)
         end
@@ -207,8 +208,6 @@ module CatalogTranslation
     end
 
     def mark_as_unclean
-      return unless @clean_translation
-      Puppet.warning("emitting a `exec puppet resource` node for #{resource_description}, reason(s):")
       @clean_translation = false
     end
 

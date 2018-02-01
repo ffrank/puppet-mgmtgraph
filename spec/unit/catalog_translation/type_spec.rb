@@ -104,16 +104,4 @@ describe "PuppetX::CatalogTranslation::Type" do
     end
   end
 
-  describe "#mark_as_unclean" do
-    it "warns about conservative mode only once" do
-      PuppetX::CatalogTranslation.stubs(:mode).returns(:conservative)
-      translator.stubs(:resource_description).returns('Service[spec]')
-
-      translator.send :mark_as_clean
-      Puppet.expects(:warning).with(regexp_matches(/exec puppet resource/)).once
-      translator.send :mark_as_unclean
-      translator.send :mark_as_unclean
-    end
-
-  end
 end
