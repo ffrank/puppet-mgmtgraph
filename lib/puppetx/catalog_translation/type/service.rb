@@ -1,4 +1,6 @@
 PuppetX::CatalogTranslation::Type.new :service do
+  emit :svc
+
   spawn :name do
     @resource[:name]
   end
