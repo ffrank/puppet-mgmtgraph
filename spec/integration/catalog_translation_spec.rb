@@ -45,6 +45,19 @@ describe "PuppetX::CatalogTranslation" do
     expect(graph['resources']['exec'][0]['cmd']).to match(/^puppet yamlresource cron 'spec'/)
   end
 
+
+  it "drops relationship metaparams but keeps the relationship" do
+    catalog = resource_catalog('host { "a": before => Host["b"] } host { "b": }')
+    graph = PuppetX::CatalogTranslation.to_mgmt(catalog)
+    expect(graph['resources']['exec'][0]['cmd']).to_not include('before')
+    expect(graph['edges']).to include(
+      {"name"=>"Host[a] -> Host[b]",
+         "from"=>{"kind"=>"exec", "name"=>"Host:a"},
+         "to"=>{"kind"=>"exec", "name"=>"Host:b"}
+      }
+    )
+  end
+
   context "in conservative mode" do
     before :each do
       PuppetX::CatalogTranslation.stubs(:mode).returns(:conservative)

@@ -13,7 +13,11 @@ PuppetX::CatalogTranslation::Type.new :default_translation do
     r_type = @resource.type.to_s
     r_title = @resource[:name]
     r_params = @resource.to_hash.reject { |attr,value|
-      attr == :name
+      [ :name,
+        # ignore relational metaparameters, those are handled through the actual
+        # edges in the RAL graph
+        :before, :require, :notify, :subscribe,
+      ].include? attr
     }
     "puppet yamlresource #{r_type} '#{r_title}' '#{Psych.to_json(r_params).chomp}'"
   end
