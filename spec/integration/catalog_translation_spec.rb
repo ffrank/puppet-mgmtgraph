@@ -34,7 +34,7 @@ describe "PuppetX::CatalogTranslation" do
   it "only includes renamed attributes in output if the original was in the input" do
     catalog = resource_catalog("service { 'apache2': ensure => running }")
     graph = PuppetX::CatalogTranslation.to_mgmt(catalog)
-    expect(graph['resources']['service'][0]).to_not include('startup')
+    expect(graph['resources']['svc'][0]).to_not include('startup')
   end
 
   it "generates `exec puppet yamlresource` vertices for untranslatable resources" do
@@ -53,7 +53,7 @@ describe "PuppetX::CatalogTranslation" do
     it "generates `exec puppet yamlresource` vertices for problematic resources" do
       catalog = resource_catalog("service { 'spec': hasrestart => true, provider => 'systemd' }")
       graph = PuppetX::CatalogTranslation.to_mgmt(catalog)
-      expect(graph['resources']).to_not include('service')
+      expect(graph['resources']).to_not include('svc')
       expect(graph['resources']).to     include('exec')
       expect(graph['resources']['exec'][0]['cmd']).to match(/^puppet yamlresource service 'spec'/)
     end
@@ -65,9 +65,9 @@ describe "PuppetX::CatalogTranslation" do
                                          "from"=>{"kind"=>"exec", "name"=>"File:/tmp/foo"},
                                          "to"=>{"kind"=>"exec", "name"=>"Service:spec"}})
       graph['edges'].each do |edge|
-        expect(edge['from']).to_not include( { 'kind' => 'service' } )
+        expect(edge['from']).to_not include( { 'kind' => 'svc' } )
         expect(edge['from']).to_not include( { 'kind' => 'file' } )
-        expect(edge['to']  ).to_not include( { 'kind' => 'service' } )
+        expect(edge['to']  ).to_not include( { 'kind' => 'svc' } )
         expect(edge['to']  ).to_not include( { 'kind' => 'file' } )
       end
     end

@@ -18,7 +18,7 @@ describe "PuppetX::CatalogTranslation::Type" do
       it "returns the original type in optimistic mode" do
         PuppetX::CatalogTranslation.stubs(:mode).returns(:optimistic)
         type, _ = translator.translate!(resource)
-        expect(type).to equal(:service)
+        expect(type).to equal(:svc)
       end
 
       it "returns an exec resource in conservative mode" do
