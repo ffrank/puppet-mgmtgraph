@@ -19,9 +19,15 @@ PuppetX::CatalogTranslation::Type.new :package do
 
   ignore :provider
 
+  ignore :allow_virtual do |value|
+    if !value or value == :false
+      translation_warning "does not allow virtual package names, which mgmt does not know about"
+    end
+  end
+
   ignore :configfiles do |value|
     if value != :keep
-      Puppet.warning "is set to #{value} config files, which does not translate."
+      translation_warning "is set to #{value} config files, which does not translate."
     end
   end
 

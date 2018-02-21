@@ -16,7 +16,8 @@ describe "PuppetX::CatalogTranslation::Type::Package" do
   end
 
   it "prints an error message about unsupported ensure values" do
-    %w{1.3.1-5 latest held 10bpo81}.each do |ensure_value|
+    # FIXME: removed 'held' from this list because it can make Puppet stumble on yum based systems
+    %w{1.3.1-5 latest 10bpo81}.each do |ensure_value|
       Puppet.expects(:err).with(regexp_matches(/cannot be translated/))
       catalog = resource_catalog("package { 'cowsay': ensure => '#{ensure_value}' }")
       graph = PuppetX::CatalogTranslation.to_mgmt(catalog)
