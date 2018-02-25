@@ -48,4 +48,28 @@ Puppet::Face.define(:mgmtgraph, '0.0.1') do
       PuppetX::CatalogTranslation.to_mgmt(catalog.to_ral)
     end
   end
+
+  action :stats do
+    summary "Print statistics about translation issues"
+    option "--conservative" do
+      summary "Emit `exec puppet resource` nodes in case of translation limitations"
+    end
+
+    when_invoked do |options|
+
+      # FIXME: don't copy-paste the catalog retrieval
+
+      # suppress performance message from the compiler
+      if Puppet[:log_level] == "notice"
+        Puppet[:log_level] = "warning"
+        reset_log_level = true
+      end
+      catalog = Puppet::Face[:catalog, "0.0"].find
+      if reset_log_level
+        Puppet[:log_level] = "notice"
+      end
+
+      puts PuppetX::CatalogTranslation.stats(catalog.to_ral)
+    end
+  end
 end

@@ -43,6 +43,18 @@ module PuppetX::CatalogTranslation
     desymbolize(result)
   end
 
+  def self.stats(catalog)
+    PuppetX::CatalogTranslation::Type.reset_error_log!
+
+    catalog.relationship_graph.vertices.each do |res|
+      next unless translator = PuppetX::CatalogTranslation::Type.translation_for(res.type)
+      next unless translator.output
+      translator.translate!(res)
+    end
+
+    PuppetX::CatalogTranslation::Type.dump_error_log
+  end
+
   def self.desymbolize(it)
     case it
     when Symbol

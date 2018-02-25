@@ -5,6 +5,9 @@ module CatalogTranslation
 
     @instances = {}
 
+    # when nil, just display errors. Otherwise, assume is a hash of 'message(string) => count(int)'
+    @messages = nil
+
     def initialize(name,&block)
       @name = name
       @output = name # can be overridden from DSL
@@ -113,6 +116,23 @@ module CatalogTranslation
       @translations = {}
     end
 
+    def self.reset_error_log!
+      @messages = {}
+    end
+
+    def self.disable_error_log!
+      @messages = nil
+    end
+
+    def self.dump_error_log
+      list = @messages.keys.sort { |a,b| @messages[b] <=> @messages[a] }
+      result = ''
+      list.each do |message|
+        result += sprintf("%5ix %s\n", @messages[message], message)
+      end
+      result
+    end
+
     private
 
     def self.register(instance)
@@ -125,6 +145,17 @@ module CatalogTranslation
 
     def self.load_translator(type)
       loader.load(type)
+    end
+
+    def self.log_error(message)
+      @messages[message] ||= 0
+      @messages[message] += 1
+    end
+
+    def self.consolidating?
+      return false if @messages.nil?
+      # TODO: make it possible to also collect warnings
+      :err
     end
 
     # below are DSL methods
@@ -198,13 +229,27 @@ module CatalogTranslation
       end
     end
 
+    def generic_description
+      resource_description.sub(/\[.*\]/, '[...]')
+    end
+
     def unsupported(message, level = :warning)
+      if self.class.consolidating?
+        log_resource_error(message, level)
+        return
+      end
+
       case level
       when :warning, :err
         Puppet.send(level, "#{resource_description} #{message}")
       else
         raise "invalid message level '#{level}' in #{self.class.name}#unsupported (while translating #{@resource.inspect if @resource})"
       end
+    end
+
+    def log_resource_error(message, level)
+      return if level != :err and self.class.consolidating? == :err
+      self.class.log_error("#{generic_description} #{message}")
     end
 
     def mark_as_unclean
