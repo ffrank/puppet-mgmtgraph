@@ -73,7 +73,7 @@ module CatalogTranslation
         # translators should explicitly ignore them to avoid this
         resource.parameters.keys.each do |attr|
           next if seen[attr]
-          translation_failure "cannot translate attribute '#{attr} => #{resource[attr].inspect}', attribute is ignored"
+          translation_failure "cannot translate attribute '#{attr}', attribute is ignored", resource[attr].inspect
         end
 
         # if a regular (not the catch-all) translation is unclean,
@@ -208,17 +208,17 @@ module CatalogTranslation
       @catch_all = true
     end
 
-    def translation_warning(message)
+    def translation_warning(message, value = nil)
       if PuppetX::CatalogTranslation.mode == :conservative
         mark_as_unclean
       end
-      unsupported message, :warning
+      unsupported message, :warning, value
     end
 
-    def translation_failure(message)
+    def translation_failure(message, value = nil)
       # a failure should always lead to a handed off resource
       mark_as_unclean
-      unsupported message, :err
+      unsupported message, :err, value
     end
 
     def resource_description
@@ -233,10 +233,14 @@ module CatalogTranslation
       resource_description.sub(/\[.*\]/, '[...]')
     end
 
-    def unsupported(message, level = :warning)
+    def unsupported(message, level = :warning, value = nil)
       if self.class.consolidating?
         log_resource_error(message, level)
         return
+      end
+
+      if value != nil
+        message = "#{message} (value: #{value})"
       end
 
       case level

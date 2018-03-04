@@ -12,7 +12,7 @@ PuppetX::CatalogTranslation::Type.new :package do
     when :purged, :absent
       :uninstalled
     else
-      translation_failure "uses ensure => #{value} which currently cannot be translated for mgmt (defaulting to 'installed')"
+      translation_failure "uses an ensure value that currently cannot be translated for mgmt (defaulting to 'installed')", value
       :installed
     end
   end
@@ -27,7 +27,7 @@ PuppetX::CatalogTranslation::Type.new :package do
 
   ignore :configfiles do |value|
     if value != :keep
-      translation_warning "is set to #{value} config files, which does not translate."
+      translation_warning "is set a non-default value, which does not translate.", value
     end
   end
 

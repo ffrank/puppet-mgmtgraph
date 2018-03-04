@@ -65,7 +65,7 @@ describe "PuppetX::CatalogTranslation::Type" do
 
   describe "#translation_warning" do
     it "calls #unsupported at warning level" do
-      translator.expects(:unsupported).with(anything, :warning)
+      translator.expects(:unsupported).with(anything, :warning, nil)
       translator.send :translation_warning, "This is a spec warning"
     end
 
@@ -78,7 +78,7 @@ describe "PuppetX::CatalogTranslation::Type" do
 
   describe "#translation_failure" do
     it "calls #unsupported at error level" do
-      translator.expects(:unsupported).with(anything, :err)
+      translator.expects(:unsupported).with(anything, :err, nil)
       translator.send :translation_failure, "This is a spec error"
     end
 
@@ -101,6 +101,11 @@ describe "PuppetX::CatalogTranslation::Type" do
 
     it "does not accept invalid message levels" do
       expect {translator.send :unsupported, "This is an error", :initialize}.to raise_error(/initialize/)
+    end
+
+    it "includes the value in the message if it was given" do
+      Puppet.expects(:warning).with(regexp_matches(/this_is_a_test_string_and_should_appear/))
+      translator.send :unsupported, "This is a warning", :warning, "value=this_is_a_test_string_and_should_appear"
     end
   end
 

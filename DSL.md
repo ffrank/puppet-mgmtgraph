@@ -207,7 +207,7 @@ To give feedback to the user, rule blocks can use two DSL methods:
     values in `package` resources that describe the desired package
     version.
     
-        translation_failure "uses ensure => #{value} which currently cannot be translated for mgmt (defaulting to 'installed')"
+        translation_failure "uses a non-standard ensure value, which currently cannot be translated for mgmt (defaulting to 'installed')", value
 
     The message will be raised on Puppet's `err` level.
     
@@ -222,3 +222,10 @@ In the output, the engine will prepend your message with the resource
 description, e.g. `File[/etc/ntp.conf]`. The message should form
 a sentence (sans subject) in present tense, and start in lower
 case (see examples above).
+
+The message should not be concatenated from any variable parts, such
+as the value of a parameter. This makes it impossible to consolidate
+messages in statistics mode. Use the optional second parameter of
+the `translation_failure` and `translation_warning` methods instead:
+
+    translation_failure "cannot take this value in mgmt.", value

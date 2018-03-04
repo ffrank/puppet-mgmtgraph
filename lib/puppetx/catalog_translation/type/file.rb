@@ -74,9 +74,9 @@ module PuppetX::CatalogTranslation
       when false, nil
         nil
       when /^\./
-        translation_warning "uses local backups with the #{value} suffix, which mgmt does not support. There will be no backup copies!"
+        translation_warning "uses local backups with a suffix, which mgmt does not support. There will be no backup copies!", value
       else
-        translation_warning "uses the '#{value}' file bucket, which mgmt cannot do. There will be no backup copies!"
+        translation_warning "uses a file bucket, which mgmt cannot do. There will be no backup copies!", value
       end
     end
 

@@ -39,7 +39,7 @@ PuppetX::CatalogTranslation::Type.new :augeas do
     if not @resource[:incl] && value.empty?
       nil
     elsif value != "/files#{ @resource[:incl] }"
-      translation_failure "overrides the 'context' parameter (#{value}), which does not translate"
+      translation_failure "overrides the 'context' parameter, which does not translate", value
     end
   end
 
