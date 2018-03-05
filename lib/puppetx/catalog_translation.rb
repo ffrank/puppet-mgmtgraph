@@ -55,6 +55,19 @@ module PuppetX::CatalogTranslation
     PuppetX::CatalogTranslation::Type.dump_error_log
   end
 
+  def self.get_catalog
+    # suppress performance message from the compiler
+    if Puppet[:log_level] == "notice"
+      Puppet[:log_level] = "warning"
+      reset_log_level = true
+    end
+    catalog = Puppet::Face[:catalog, "0.0"].find
+    if reset_log_level
+      Puppet[:log_level] = "notice"
+    end
+    catalog
+  end
+
   def self.desymbolize(it)
     case it
     when Symbol

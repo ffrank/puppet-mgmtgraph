@@ -29,15 +29,7 @@ Puppet::Face.define(:mgmtgraph, '0.0.1') do
     end
     when_invoked do |options|
 
-      # suppress performance message from the compiler
-      if Puppet[:log_level] == "notice"
-        Puppet[:log_level] = "warning"
-        reset_log_level = true
-      end
-      catalog = Puppet::Face[:catalog, "0.0"].find
-      if reset_log_level
-        Puppet[:log_level] = "notice"
-      end
+      catalog = PuppetX::CatalogTranslation.get_catalog
 
       if options[:conservative]
 	PuppetX::CatalogTranslation.set_mode(:conservative)
@@ -56,19 +48,7 @@ Puppet::Face.define(:mgmtgraph, '0.0.1') do
     end
 
     when_invoked do |options|
-
-      # FIXME: don't copy-paste the catalog retrieval
-
-      # suppress performance message from the compiler
-      if Puppet[:log_level] == "notice"
-        Puppet[:log_level] = "warning"
-        reset_log_level = true
-      end
-      catalog = Puppet::Face[:catalog, "0.0"].find
-      if reset_log_level
-        Puppet[:log_level] = "notice"
-      end
-
+      catalog = PuppetX::CatalogTranslation.get_catalog
       puts PuppetX::CatalogTranslation.stats(catalog.to_ral)
     end
   end
