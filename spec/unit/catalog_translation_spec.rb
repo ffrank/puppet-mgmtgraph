@@ -1,8 +1,9 @@
 require 'spec_helper'
 
 describe "PuppetX::CatalogTranslation" do
+  let(:empty_catalog) { Puppet::Resource::Catalog.new }
+
   describe "::to_mgmt" do
-    let(:empty_catalog) { Puppet::Resource::Catalog.new }
     let(:file_catalog) do
       result = Puppet::Resource::Catalog.new
       result.add_resource(Puppet::Type.type(:file).new(
@@ -82,6 +83,14 @@ describe "PuppetX::CatalogTranslation" do
     it "converts ruby symbols in the result to strings" do
       PuppetX::CatalogTranslation.expects(:desymbolize)
       PuppetX::CatalogTranslation.to_mgmt(empty_catalog)
+    end
+  end
+
+  describe "::stats" do
+    it "makes sure to purge the error log" do
+      PuppetX::CatalogTranslation::Type.expects(:reset_error_log!)
+      PuppetX::CatalogTranslation::Type.expects(:dump_error_log)
+      PuppetX::CatalogTranslation.stats(empty_catalog)
     end
   end
 

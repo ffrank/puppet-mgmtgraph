@@ -40,4 +40,24 @@ describe "puppet mgmtgraph" do
     end
   end
 
+  describe "stats" do
+
+    after :all do
+      # make sure the active error log does not contaminate other tests
+      PuppetX::CatalogTranslation::Type.disable_error_log!
+    end
+
+    let(:empty_catalog) { Puppet::Resource::Catalog.new }
+
+    it "retrieves a catalog" do
+      PuppetX::CatalogTranslation.expects(:get_catalog).returns(empty_catalog)
+      subject.stats
+    end
+
+    it "invokes the catalog translation module's stats method" do
+      PuppetX::CatalogTranslation.expects(:stats)
+      subject.stats
+    end
+  end
+
 end

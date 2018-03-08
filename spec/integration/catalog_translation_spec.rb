@@ -85,4 +85,19 @@ describe "PuppetX::CatalogTranslation" do
       end
     end
   end
+
+  context "in stats mode" do
+    after :all do
+      # make sure the active error log does not contaminate other tests
+      PuppetX::CatalogTranslation::Type.disable_error_log!
+    end
+
+    it "still loads translators for all resources" do
+      catalog = resource_catalog("file { [ '/a', '/b', '/c' ]: } -> host { [ 'x', 'y' ]: }")
+      PuppetX::CatalogTranslation::Type.expects(:translation_for).with(:file).times(3)
+      PuppetX::CatalogTranslation::Type.expects(:translation_for).with(:host).times(2)
+      PuppetX::CatalogTranslation::Type.stubs(:translation_for).with(:whit)
+      PuppetX::CatalogTranslation.stats(catalog)
+    end
+  end
 end
