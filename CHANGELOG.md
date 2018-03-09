@@ -1,5 +1,19 @@
 # Alpha releases
 
+#### 0.4.0 2018-03-09
+
+ * remove Puppet 3 support (not broken, just no longer tested)
+ * add the stats subcommand
+ * support more mgmt features (now requires mgmt 0.0.8)
+ * some fixes and improvements in edge case handling
+ * new resource type support: augeas, ec2_instance
+ * fix a bug with translating service resources
+ * fix metaparameter handling in the fallback pseudo-translator
+
+This release contains code written by Johan Bloemberg (@aequitas).
+
+Thanks for the contribution!
+
 #### 0.3.1 2017-02-20
 
  * translate `notify` resources to mgmt's `msg`
