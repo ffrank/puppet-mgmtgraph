@@ -43,9 +43,6 @@ Puppet::Face.define(:mgmtgraph, '0.0.1') do
 
   action :stats do
     summary "Print statistics about translation issues"
-    option "--conservative" do
-      summary "Emit `exec puppet resource` nodes in case of translation limitations"
-    end
 
     when_invoked do |options|
       catalog = PuppetX::CatalogTranslation.get_catalog

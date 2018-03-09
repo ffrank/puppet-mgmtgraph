@@ -1,6 +1,6 @@
 #puppet-mgmtgraph
 
-[![Build Status](https://travis-ci.org/ffrank/puppet-mgmtgraph.png)](https://travis-ci.org/ffrank/puppet-mgmtgraph)
+[![Build Status](https://travis-ci.org/ffrank/puppet-mgmtgraph.svg?branch=master)](https://travis-ci.org/ffrank/puppet-mgmtgraph)
 
 Adds the `:mgmtgraph` face and `puppet mgmtgraph` subcommand to [Puppet](https://github.com/puppetlabs/puppet).
 It allows you to compile simple Puppet manifest into a data structure that is
@@ -96,9 +96,9 @@ translatable, but raise warnings about specific parameters or values.
 
 ## Compatibility
 
-Supports Puppet `3.x` and `4.x`.
+Supports Puppet `5.x` and `4.x`.
 
-Supports `mgmt` 0.0.3 (no earlier releases)
+Supports `mgmt` 0.0.3 and higher (no earlier releases)
 
 ## Extending
 
