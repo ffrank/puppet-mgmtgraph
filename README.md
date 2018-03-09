@@ -62,6 +62,17 @@ This behavior is now available in the form of the `conservative` mode:
 The `mgmt` integration has no way of passing this flag. However, eventually this mode will probably become
 the default, with an optional `--optimistic` flag to revert to the current default.
 
+### Collecting translation problems
+
+In order to make the translation more effective, we are looking to add the most popular features from
+Puppet to mgmt. You can help by opening issues upstream at https://github.com/purpleidea/mgmt. For a
+handy list of errors from your manifests, use the following command:
+
+    puppet mgmtgraph stats
+
+The `stats` command can be used just like `print` with respect to its parameters. However, instead of
+printing the graph structure for mgmt, it presents a consolidated list of translation issues.
+
 ## Limitations
 
 Translation of virtual and exported resources is untested. Containment of supported resources
