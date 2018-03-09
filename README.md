@@ -109,7 +109,7 @@ translatable, but raise warnings about specific parameters or values.
 
 Supports Puppet `5.x` and `4.x`.
 
-Supports `mgmt` 0.0.3 and higher (no earlier releases)
+Supports `mgmt` 0.0.8 and higher (no earlier releases).
 
 ## Extending
 
