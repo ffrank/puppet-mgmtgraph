@@ -55,7 +55,7 @@ Optionally, a block can apply a transformation to the value.
       when nil
         false
       else
-        translation_failure "uses myattr=>#{value} which cannot be translated."
+        translation_failure "uses an unsupported value for myattr.", value
       end
     end
 
@@ -75,7 +75,7 @@ Optionally, a block can apply a transformation to the value.
       when :absent
         :absent
       else
-        translation_failure "uses ensure=>#{value} which cannot be translated."
+        translation_failure "uses an ensure value that cannot be translated.", value
       end
     end
 
@@ -230,4 +230,7 @@ as the value of a parameter. This makes it impossible to consolidate
 messages in statistics mode. Use the optional second parameter of
 the `translation_failure` and `translation_warning` methods instead:
 
+    # RIGHT use:
     translation_failure "cannot take this value in mgmt.", value
+    # WRONG use:
+    translation_failure "cannot take the value '#{value}' in mgmt."
