@@ -38,6 +38,10 @@ module CatalogTranslation
 
       seen = {}
 
+      if @catch_all
+        translation_failure "cannot be translated natively, falling back to 'exec puppet resource'"
+      end
+
       @translations.each do |attr,translation|
         # cache for reference below
         seen[attr] = true
@@ -79,7 +83,7 @@ module CatalogTranslation
         # if a regular (not the catch-all) translation is unclean,
         # the user might wish to defer to the catch-all
         if !@clean_translation && PuppetX::CatalogTranslation.mode == :conservative
-          Puppet.warning("emitting a `exec puppet resource` node for #{resource_description} because of the errors above")
+          translation_warning("emitting a `exec puppet resource` node because of the errors above.")
           @resource = nil
           return PuppetX::CatalogTranslation::Type.translation_for(:default_translation).translate!(resource)
         end

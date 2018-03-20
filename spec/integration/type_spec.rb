@@ -24,6 +24,14 @@ describe "PuppetX::CatalogTranslation::Type" do
       expect(output.grep(/purge/).count).to be == 1
       expect(output.grep(/purge/)[0]).to include('3x')
     end
+
+    it "includes messages about unsupported resource types" do
+      catalog = resource_catalog("schedule { 'spec': period => hourly, repeat => 2 }")
+      PuppetX::CatalogTranslation.to_mgmt(catalog)
+      output = PuppetX::CatalogTranslation::Type.dump_error_log.lines
+      output *= "\n"
+      expect(output).to include('Schedule')
+    end
   end
 
 end
