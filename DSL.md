@@ -10,7 +10,9 @@ a specific set of rules can be created.
 
 This is always done with a call to `PuppetX::CatalogTranslation::Type.new`.
 The resulting rule-set is commonly called a `translator`.
-Rule DSL code is given to this method as a block.
+Rule DSL code is given to this method as a block. You can find examples in the
+[type subdirectory](https://github.com/ffrank/puppet-mgmtgraph/tree/master/lib/puppetx/catalog_translation/type)
+of the source code.
 
 DSL code can use the `@resource` member variable. During translation,
 it holds the original Puppet resource that is being translated. This is
