@@ -1,4 +1,4 @@
-#mgmtgraph DSL
+# mgmtgraph DSL
 
 Rules for translating Puppet resources are defined in a Ruby DSL.
 This document describes this language and serves as a reference.
