@@ -10,6 +10,16 @@ Released under the terms of the Apache 2 License.
 
 Authored by Felix Frank.
 
+## Installation
+
+To manually install this module, you can do so with:
+
+```
+puppet module install ffrank-mgmtgraph
+```
+
+For more detailed installation instructions please see the [forge](https://forge.puppet.com/ffrank/mgmtgraph).
+
 ## Usage
 
 It is no longer necessary to invoke `puppet mgmtgraph` directly, since it's possible to use `mgmt`'s `--puppet` switch
