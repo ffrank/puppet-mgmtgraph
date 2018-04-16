@@ -12,13 +12,18 @@ Authored by Felix Frank.
 
 ## Installation
 
-To manually install this module, you can do so with:
+You need Puppet on the system that is supposed to translate code for mgmt. It is directly available in all major
+Linux distributions as a package. Otherwise, a generic way to get Puppet (applicable to Mac and Windows as well)
+is the Ruby gem:
 
-```
-puppet module install ffrank-mgmtgraph
-```
+    gem install puppet
 
-For more detailed installation instructions please see the [forge](https://forge.puppet.com/ffrank/mgmtgraph).
+Once Puppet is functional, you can get this module from the Puppet Forge:
+
+    puppet module install ffrank-mgmtgraph
+
+Note: You don't need root rights to do this. However, mgmt will likely run as root, and Puppet modules
+that were installed by non-root users are only available for the respective user.
 
 ## Usage
 

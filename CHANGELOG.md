@@ -1,5 +1,9 @@
 # Alpha releases
 
+#### 0.4.1 2018-03-09
+
+ * add missing documentation
+
 #### 0.4.0 2018-03-09
 
  * remove Puppet 3 support (not broken, just no longer tested)
