@@ -88,6 +88,26 @@ handy list of errors from your manifests, use the following command:
 The `stats` command can be used just like `print` with respect to its parameters. However, instead of
 printing the graph structure for mgmt, it presents a consolidated list of translation issues.
 
+This will help you determine which params that aren't yet natively supported in
+`mgmt` might be good candidates that you could send a
+[patch](https://github.com/purpleidea/mgmt/) for.
+
+#### Example
+
+Running:
+
+```
+puppet mgmtgraph stats --code 'file { "/tmp/test": ensure => present, seltype => "tmp_t" } -> package { "cowsay": ensure => installed }'
+```
+
+Will produce output that includes:
+
+```
+1x File[...] cannot translate attribute 'seltype', attribute is ignored
+```
+
+Since there is no equivalent for the `file` param named `seltype` in `mgmt` yet.
+
 ## Limitations
 
 Translation of virtual and exported resources is untested. Containment of supported resources
