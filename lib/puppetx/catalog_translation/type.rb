@@ -57,7 +57,9 @@ module CatalogTranslation
 
         # spawn additional attributes (watchcmd...)
         if translation[:spawned]
-          result[title] = translation[:block].call
+          value = translation[:block].call
+          next if value.nil?
+          result[title] = value
           next
         end
 
