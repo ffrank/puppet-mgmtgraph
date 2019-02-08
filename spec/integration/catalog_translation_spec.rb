@@ -1,20 +1,24 @@
 require 'spec_helper'
 
 describe "PuppetX::CatalogTranslation" do
+  before :each do
+    ensure_core_module 'cron'
+  end
+
   it "only keeps edges between supported resources" do
-    catalog = resource_catalog("file { '/tmp/foo': } -> file { '/tmp/bar': } -> resources { 'cron': }")
+    catalog = resource_catalog("file { '/tmp/foo': } -> file { '/tmp/bar': } -> resources { 'user': }")
     graph = PuppetX::CatalogTranslation.to_mgmt(catalog)
     expect(graph['edges']).to include({"name"=>"File[/tmp/foo] -> File[/tmp/bar]",
                                        "from"=>{"kind"=>"file", "name"=>"/tmp/foo"},
                                        "to"=>{"kind"=>"file", "name"=>"/tmp/bar"}})
     graph['edges'].each do |edge|
-      expect(edge['from']).to_not include( { 'name' => 'cron' } )
-      expect(edge['to']  ).to_not include( { 'name' => 'cron' } )
+      expect(edge['from']).to_not include( { 'name' => 'user' } )
+      expect(edge['to']  ).to_not include( { 'name' => 'user' } )
     end
   end
 
   it "uses deterministic names for edges that do not change regardless of context" do
-    manifest = "file { '/tmp/foo': } -> file { '/tmp/bar': } -> resources { 'cron': }"
+    manifest = "file { '/tmp/foo': } -> file { '/tmp/bar': } -> resources { 'user': }"
     graph = PuppetX::CatalogTranslation.to_mgmt(resource_catalog(manifest))
     edge = graph['edges'][0]
 
@@ -47,6 +51,7 @@ describe "PuppetX::CatalogTranslation" do
 
 
   it "drops relationship metaparams but keeps the relationship" do
+    ensure_core_module 'host'
     catalog = resource_catalog('host { "a": before => Host["b"] } host { "b": }')
     graph = PuppetX::CatalogTranslation.to_mgmt(catalog)
     expect(graph['resources']['exec'][0]['cmd']).to_not include('before')
@@ -93,6 +98,7 @@ describe "PuppetX::CatalogTranslation" do
     end
 
     it "still loads translators for all resources" do
+      ensure_core_module 'host'
       catalog = resource_catalog("file { [ '/a', '/b', '/c' ]: } -> host { [ 'x', 'y' ]: }")
       PuppetX::CatalogTranslation::Type.expects(:translation_for).with(:file).times(3)
       PuppetX::CatalogTranslation::Type.expects(:translation_for).with(:host).times(2)

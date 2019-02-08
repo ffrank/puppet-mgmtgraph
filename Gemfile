@@ -5,7 +5,7 @@ source "https://rubygems.org"
 $:.unshift('lib')
 
 # gem "rails"
-gem "puppet", ENV['PUPPET_GEM_VERSION'] || '~> 5.0'
+gem "puppet", ENV['PUPPET_GEM_VERSION'] || '~> 6.2'
 gem "puppetlabs_spec_helper"
 
 if File.exists? "#{__FILE__}.local"

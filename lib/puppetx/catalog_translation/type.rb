@@ -150,7 +150,7 @@ module CatalogTranslation
     end
 
     def self.load_translator(type)
-      loader.load(type)
+      loader.load(type, Puppet.lookup(:current_environment))
     end
 
     def self.log_error(message)
