@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'puppet/type/notify'
 
 describe "PuppetX::CatalogTranslation::Type" do
 
@@ -31,6 +32,14 @@ describe "PuppetX::CatalogTranslation::Type" do
       output = PuppetX::CatalogTranslation::Type.dump_error_log.lines
       output *= "\n"
       expect(output).to include('Schedule')
+    end
+  end
+
+  describe ".spawn" do
+    it "drops parameters that yield a nil value" do
+      type = PuppetX::CatalogTranslation::Type.new(:spec) { spawn(:unwanted) { nil } }
+      out_type, params = type.translate!(Puppet::Type::Notify.new(:name => "spec-notify"))
+      expect(params).to_not include(:unwanted)
     end
   end
 
