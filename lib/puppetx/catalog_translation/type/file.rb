@@ -29,7 +29,7 @@ module PuppetX::CatalogTranslation
       when :absent
         :absent
       else
-        raise "cannot translate file ensure:#{value}"
+        translation_failure "cannot translate file ensure:#{value}"
       end
     end
 
