@@ -29,9 +29,13 @@ RSpec.configure do |config|
 end
 
 def resource_catalog(manifest)
+  compile_catalog(manifest).to_ral
+end
+
+def compile_catalog(manifest)
   Puppet[:code] = manifest
   node = Puppet::Node.new('spec.example.net')
-  Puppet::Parser::Compiler.compile(node).to_ral
+  Puppet::Parser::Compiler.compile(node)
 end
 
 def ensure_core_module(core_module)

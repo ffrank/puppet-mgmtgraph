@@ -29,6 +29,8 @@ Puppet::Face.define(:mgmtgraph, '0.0.1') do
     end
     when_invoked do |options|
 
+      PuppetX::CatalogTranslation.assert_puppet_version
+
       catalog = PuppetX::CatalogTranslation.get_catalog
 
       if options[:conservative]
@@ -45,6 +47,7 @@ Puppet::Face.define(:mgmtgraph, '0.0.1') do
     summary "Print statistics about translation issues"
 
     when_invoked do |options|
+      PuppetX::CatalogTranslation.assert_puppet_version
       catalog = PuppetX::CatalogTranslation.get_catalog
       puts PuppetX::CatalogTranslation.stats(catalog.to_ral)
     end

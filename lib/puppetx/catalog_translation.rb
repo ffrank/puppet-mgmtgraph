@@ -5,6 +5,8 @@ require 'puppetx/catalog_translation/type'
 module PuppetX; end
 
 module PuppetX::CatalogTranslation
+  MINPUPPETVERSION='4.0.0'
+
   @mode = :optimistic
 
   def self.to_mgmt(catalog)
@@ -96,5 +98,11 @@ module PuppetX::CatalogTranslation
 
   def self.mode
     return @mode
+  end
+
+  def self.assert_puppet_version
+    if Gem::Version.new(Puppet.version) < Gem::Version.new(MINPUPPETVERSION)
+      raise Puppet::Error.new("The puppet mgmtgraph module requires Puppet 4 or greater, version #{Puppet.version} is not supported.")
+    end
   end
 end
