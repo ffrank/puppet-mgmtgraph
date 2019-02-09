@@ -71,7 +71,7 @@ module PuppetX::CatalogTranslation
 
     ignore :backup do |value|
       case value
-      when false, nil
+      when false, nil, 'puppet'
         nil
       when /^\./
         translation_warning "uses local backups with a suffix, which mgmt does not support. There will be no backup copies!", value

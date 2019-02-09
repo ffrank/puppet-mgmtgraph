@@ -77,7 +77,7 @@ describe "PuppetX::CatalogTranslation" do
     end
 
     it "preserves edges from and to wrapped resources" do
-      catalog = resource_catalog("file { '/tmp/foo': } -> service { 'spec': hasrestart => true, provider => 'systemd' }")
+      catalog = resource_catalog("file { '/tmp/foo': backup => 'specbucket' } -> service { 'spec': hasrestart => true, provider => 'systemd' }")
       graph = PuppetX::CatalogTranslation.to_mgmt(catalog)
       expect(graph['edges']).to include({"name"=>"File[/tmp/foo] -> Service[spec]",
                                          "from"=>{"kind"=>"exec", "name"=>"File:/tmp/foo"},
