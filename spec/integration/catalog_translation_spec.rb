@@ -63,6 +63,22 @@ describe "PuppetX::CatalogTranslation" do
     )
   end
 
+  context "in default mode" do
+    it "generates translations for resources with warnings" do
+      catalog = resource_catalog("service { 'spec': provider => 'systemd' }")
+      graph = PuppetX::CatalogTranslation.to_mgmt(catalog)
+      expect(graph['resources']).to     include('svc')
+      expect(graph['resources']).to_not include('exec')
+    end
+
+    it "generates `exec puppet yamlresource` vertices for resources that fail translation" do
+      catalog = resource_catalog("service { 'spec': provider => 'init' }")
+      graph = PuppetX::CatalogTranslation.to_mgmt(catalog)
+      expect(graph['resources']).to_not include('svc')
+      expect(graph['resources']).to     include('exec')
+    end
+  end
+
   context "in conservative mode" do
     before :each do
       PuppetX::CatalogTranslation.stubs(:mode).returns(:conservative)

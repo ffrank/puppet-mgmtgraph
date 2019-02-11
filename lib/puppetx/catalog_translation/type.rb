@@ -79,12 +79,12 @@ module CatalogTranslation
         # translators should explicitly ignore them to avoid this
         resource.parameters.keys.each do |attr|
           next if seen[attr]
-          translation_failure "cannot translate attribute '#{attr}', attribute is ignored", resource[attr].inspect
+          translation_failure "cannot translate attribute '#{attr}', failing resource translation", resource[attr].inspect
         end
 
         # if a regular (not the catch-all) translation is unclean,
         # the user might wish to defer to the catch-all
-        if !@clean_translation && PuppetX::CatalogTranslation.mode == :conservative
+        if !@clean_translation
           translation_warning("emitting a `exec puppet resource` node because of the errors above.")
           @resource = nil
           return PuppetX::CatalogTranslation::Type.translation_for(:default_translation).translate!(resource)
