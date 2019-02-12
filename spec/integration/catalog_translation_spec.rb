@@ -36,7 +36,7 @@ describe "PuppetX::CatalogTranslation" do
   end
 
   it "only includes renamed attributes in output if the original was in the input" do
-    catalog = resource_catalog("service { 'apache2': ensure => running }")
+    catalog = resource_catalog("service { 'apache2': ensure => running, provider => 'systemd' }")
     graph = PuppetX::CatalogTranslation.to_mgmt(catalog)
     expect(graph['resources']['svc'][0]).to_not include('startup')
   end
