@@ -1,5 +1,19 @@
 # Alpha releases
 
+#### 0.4.2 2019-02-12
+
+ * documentation improvements
+ * avoid spawning parameters when they get no value
+ * fix an issue where the application would abort with certain inputs
+ * add support for Puppet 6.x
+ * made sure to not try and run on Puppet 3 and older
+ * no longer warns when files use the default filebucket option
+ * fix issue with failing translations
+
+This release contains contributions by James Shubin (@purpleidea)
+
+Thanks!
+
 #### 0.4.1 2018-03-09
 
  * add missing documentation
