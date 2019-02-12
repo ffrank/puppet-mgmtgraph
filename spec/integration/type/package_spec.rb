@@ -15,13 +15,16 @@ describe "PuppetX::CatalogTranslation::Type::Package" do
     end
   end
 
-  it "prints an error message about unsupported ensure values" do
+  it "fails on unsupported ensure values" do
     # FIXME: removed 'held' from this list because it can make Puppet stumble on yum based systems
     %w{1.3.1-5 latest 10bpo81}.each do |ensure_value|
-      Puppet.expects(:err).with(regexp_matches(/cannot be translated/))
+      Puppet.expects(:err).with(regexp_matches(/cannot be translated/)).twice
       catalog = resource_catalog("package { 'cowsay': ensure => '#{ensure_value}' }")
       graph = PuppetX::CatalogTranslation.to_mgmt(catalog)
-      expect(graph['resources']['pkg'][0]).to include('state' => 'installed')
+
+      # become 'exec puppet yamlresource' through the workaround
+      expect(graph['resources']).to_not include('pkg')
+      expect(graph['resources']).to     include('exec')
     end
   end
 end

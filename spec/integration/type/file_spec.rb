@@ -28,8 +28,12 @@ describe "PuppetX::CatalogTranslation::Type::File" do
     Puppet.stubs(:err).with(regexp_matches(/ignore source permissions/))
 
     Puppet.expects(:err).with(regexp_matches(/puppet fileserver URL/))
+    Puppet.expects(:err).with(regexp_matches(/cannot be translated natively/))
+
     graph = PuppetX::CatalogTranslation.to_mgmt(catalog)
-    expect(graph['resources']['file'][0]).to include('content' => '')
+    # the puppet yamlresource workaround is applied
+    expect(graph['resources']).to_not include 'file'
+    expect(graph['resources']).to     include 'exec'
   end
 
   it "reports an error when multiple sources are specified" do
@@ -42,7 +46,10 @@ describe "PuppetX::CatalogTranslation::Type::File" do
     Puppet.stubs(:err).with(regexp_matches(/ignore source permissions/))
 
     Puppet.expects(:err).with(regexp_matches(/multiple sources/))
+    Puppet.expects(:err).with(regexp_matches(/cannot be translated natively/))
+
     graph = PuppetX::CatalogTranslation.to_mgmt(catalog)
-    expect(graph['resources']['file'][0]).to include('content' => '')
+    expect(graph['resources']).to_not include 'file'
+    expect(graph['resources']).to     include 'exec'
   end
 end

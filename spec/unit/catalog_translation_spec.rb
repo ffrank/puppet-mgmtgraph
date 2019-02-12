@@ -12,9 +12,9 @@ describe "PuppetX::CatalogTranslation" do
       ))
       result
     end
-    let(:notify_catalog) do
+    let(:bucket_catalog) do
       result = Puppet::Resource::Catalog.new
-      result.add_resource(Puppet::Type.type(:notify).new(
+      result.add_resource(Puppet::Type.type(:filebucket).new(
         :name => 'this will not translate'
       ))
       result
@@ -53,7 +53,8 @@ describe "PuppetX::CatalogTranslation" do
     end
 
     it "does not include dropped resources in the result hash" do
-      result = PuppetX::CatalogTranslation.to_mgmt(notify_catalog)
+      PuppetX::CatalogTranslation::Type.new(:filebucket) { emit nil }
+      result = PuppetX::CatalogTranslation.to_mgmt(bucket_catalog)
       expect(result['resources']).to_not include 'notify'
       expect(result['resources']).to_not include 'exec'
     end

@@ -5,7 +5,7 @@ PuppetX::CatalogTranslation::Type.new :notify do
     @resource.title
   end
 
-  spawn :body do
+  rename :message, :body do
     @resource[:name]
   end
 

@@ -12,17 +12,13 @@ describe "PuppetX::CatalogTranslation::Type" do
 
       it "emits an error" do
         Puppet.expects(:err).with(regexp_matches /cannot translate.*hasrestart/)
+        Puppet.expects(:err).with(regexp_matches /cannot be translated natively/)
         translator.translate!(resource)
       end
 
-      it "returns the original type in optimistic mode" do
-        PuppetX::CatalogTranslation.stubs(:mode).returns(:optimistic)
-        type, _ = translator.translate!(resource)
-        expect(type).to equal(:svc)
-      end
-
-      it "returns an exec resource in conservative mode" do
-        PuppetX::CatalogTranslation.stubs(:mode).returns(:conservative)
+      # this is icky: should actually be a test for "when translation is unclean"
+      # but that is controlled by a private method -_-
+      it "returns an exec resource" do
         type, _ = translator.translate!(resource)
         expect(type).to equal(:exec)
       end
@@ -58,7 +54,6 @@ describe "PuppetX::CatalogTranslation::Type" do
       cron_translation = PuppetX::CatalogTranslation::Type.translation_for(:cron)
       expect(cron_translation).to be default_translation
     end
-               
   end
 
   let(:translator) { PuppetX::CatalogTranslation::Type.translation_for(:service) }
