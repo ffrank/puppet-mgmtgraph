@@ -6,6 +6,7 @@ module CatalogTranslation
     @instances = {}
 
     # when nil, just display errors. Otherwise, assume is a hash of 'message(string) => count(int)'
+    @counts = nil
     @messages = nil
 
     def initialize(name,&block)
@@ -39,6 +40,7 @@ module CatalogTranslation
       seen = {}
 
       if @catch_all
+        self.class.count(:unsupported)
         translation_failure "cannot be translated natively, falling back to 'exec puppet resource'"
       end
 
@@ -87,8 +89,12 @@ module CatalogTranslation
         if !@clean_translation
           translation_warning("emitting a `exec puppet resource` node because of the errors above.")
           @resource = nil
-          return PuppetX::CatalogTranslation::Type.translation_for(:default_translation).translate!(resource)
+          result = PuppetX::CatalogTranslation::Type.translation_for(:default_translation).translate!(resource)
+          self.class.count(:fallback)
+          self.class.count(:unsupported, -1)
+          return result
         end
+        self.class.count(:native) unless @output == :noop
       end
 
       @resource = nil
@@ -123,16 +129,21 @@ module CatalogTranslation
     end
 
     def self.reset_error_log!
+      @counts = { :native => 0, :fallback => 0, :unsupported => 0 }
       @messages = {}
     end
 
     def self.disable_error_log!
+      @counts = nil
       @messages = nil
     end
 
     def self.dump_error_log
       list = @messages.keys.sort { |a,b| @messages[b] <=> @messages[a] }
       result = ''
+      result += sprintf("%7i native translations\n", @counts[:native])
+      result += sprintf("%7i failed translations\n", @counts[:fallback])
+      result += sprintf("%7i unsupported resources\n", @counts[:unsupported])
       list.each do |message|
         result += sprintf("%5ix %s\n", @messages[message], message)
       end
@@ -156,6 +167,11 @@ module CatalogTranslation
     def self.log_error(message)
       @messages[message] ||= 0
       @messages[message] += 1
+    end
+
+    def self.count(success, add=1)
+      return unless @counts
+      @counts[success] += add
     end
 
     def self.consolidating?
