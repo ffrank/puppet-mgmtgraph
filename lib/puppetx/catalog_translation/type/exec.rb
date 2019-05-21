@@ -9,6 +9,12 @@ PuppetX::CatalogTranslation::Type.new :exec do
 
   carry :timeout
 
+  carry :user
+
+  carry :group
+
+  carry :cwd
+
   spawn(:shell, :watchshell, :ifshell) { "/bin/bash" }
 
   spawn(:watchcmd) { "while : ; do echo \"puppet run interval passed\" ; /bin/sleep #{Puppet[:runinterval]} ; done" }
