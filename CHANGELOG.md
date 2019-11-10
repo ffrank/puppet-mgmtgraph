@@ -1,5 +1,10 @@
 # Alpha releases
 
+#### 0.4.3 2019-11-11
+
+* supports more parameters to `exec`
+* add support for `mount`, `user`, `group`
+
 #### 0.4.2 2019-02-12
 
  * documentation improvements
