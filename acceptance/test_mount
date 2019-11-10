@@ -1,0 +1,26 @@
+#!/bin/bash
+
+. `dirname $0`/shared.sh
+
+mount_point=/mnt/acceptance_mount
+fs_file=/tmp/loopdevice
+manifest="mount { '$mount_point': device => '$fs_file', ensure => 'mounted' }"
+
+mkdir -p $mount_point \
+	|| fail "could not prepare mount point at $mount_point"
+
+dd if=/dev/zero of=$fs_file bs=1M count=10 \
+	|| fail "could not create empty file $fs_file"
+
+mke2fs $fs_file \
+	|| fail "could not create filesystem in file $fs_file"
+
+mgmt run --tmp-prefix --converged-timeout 5 \
+	puppet 'mount { "'$mount_point'": device => "'$fs_file'", fstype => "ext2", options => "loop,rw", ensure => "mounted" }'
+
+assert grep -q $fs_file /proc/mounts
+
+mgmt run --tmp-prefix --converged-timeout 5 \
+	puppet 'mount { "'$mount_point'": device => "'$fs_file'", ensure => "unmounted" }'
+
+assert ! grep -q $fs_file /proc/mounts
