@@ -1,19 +1,45 @@
 ---
-sudo: false
+dist: xenial
 language: ruby
-install:
-  - bundle install
-  - wget https://github.com/purpleidea/mgmt/releases/download/0.0.19/mgmt_0.0.19_amd64.deb
-  - dpkg -i mgmt_0.0.19_amd64.deb
+cache: bundler
+before_install:
+  - bundle -v
+  - rm -f Gemfile.lock
+  - gem update --system $RUBYGEMS_VERSION
+  - gem --version
+  - bundle -v
 script:
-  - bundle exec rake spec
-  - acceptance/run_test.sh
+  - 'bundle exec rake $CHECK'
+bundler_args: --without system_tests
+rvm:
+  - 2.5.3
+stages:
+  - static
+  - spec
+  - acceptance
+  -
+    if: tag =~ ^v\d
+    name: deploy
 matrix:
   fast_finish: true
   include:
-  - rvm: 2.4.0
-    env: PUPPET_GEM_VERSION="~> 6.2"
-  - rvm: 2.4.0
-    env: PUPPET_GEM_VERSION="~> 5.5"
-  - rvm: 2.3.0
-    env: PUPPET_GEM_VERSION="~> 4.10.4"
+    -
+      env: CHECK="check:symlinks check:git_ignore check:dot_underscore check:test_file rubocop syntax lint metadata_lint"
+      stage: static
+    -
+      env: PUPPET_GEM_VERSION="~> 5.0" CHECK=parallel_spec
+      rvm: 2.4.5
+      stage: spec
+    -
+      env: PUPPET_GEM_VERSION="~> 6.0" CHECK=parallel_spec
+      rvm: 2.5.3
+      stage: spec
+    -
+      env: DEPLOY_TO_FORGE=yes
+      stage: deploy
+branches:
+  only:
+    - master
+    - /^v\d/
+notifications:
+  email: false

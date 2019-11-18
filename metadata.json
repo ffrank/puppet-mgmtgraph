@@ -5,30 +5,51 @@
   "summary": "Puppet module that adds the mgmtgraph face",
   "license": "Apache-2.0",
   "source": "https://github.com/ffrank/puppet-mgmtgraph",
-  "issues_url": "https://github.com/ffrank/puppet-mgmtgraph/issues",
   "project_page": "https://github.com/ffrank/puppet-mgmtgraph",
+  "issues_url": "https://github.com/ffrank/puppet-mgmtgraph/issues",
   "dependencies": [
-    { "name": "ffrank-yamlresource", "version_requirement": "0.1.x" }
+    {
+      "name": "ffrank-yamlresource",
+      "version_requirement": "0.1.x"
+    }
   ],
-  "tags": [ "compiler", "catalog", "mgmt" ],
   "operatingsystem_support": [
     {
-    "operatingsystem":"RedHat",
-    "operatingsystemrelease":[ "6.0", "7.0" ]
+      "operatingsystem": "RedHat",
+      "operatingsystemrelease": [
+        "6.0",
+        "7.0"
+      ]
     },
     {
-    "operatingsystem":"Debian",
-    "operatingsystemrelease":[ "8.0", "9.0" ]
+      "operatingsystem": "Debian",
+      "operatingsystemrelease": [
+        "8.0",
+        "9.0"
+      ]
     },
     {
-    "operatingsystem":"Ubuntu",
-    "operatingsystemrelease":[ "12.04", "14.04", "16.04", "18.04" ]
+      "operatingsystem": "Ubuntu",
+      "operatingsystemrelease": [
+        "12.04",
+        "14.04",
+        "16.04",
+        "18.04"
+      ]
     }
   ],
   "requirements": [
     {
-    "name": "puppet",
-    "version_requirement": ">= 4.0.0 < 7.0.0"
+      "name": "puppet",
+      "version_requirement": ">= 4.0.0 < 7.0.0"
     }
-  ]
+  ],
+  "tags": [
+    "compiler",
+    "catalog",
+    "mgmt"
+  ],
+  "pdk-version": "1.14.1",
+  "template-url": "pdk-default#1.14.1",
+  "template-ref": "1.14.1-0-g0b5b39b"
 }
