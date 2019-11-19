@@ -47,7 +47,7 @@ module PuppetX::CatalogTranslation
           translation_failure "uses a puppet fileserver URL source - this will not be translated"
           ''
         else
-          source
+          source.gsub(/\/+/, '/')
         end
       elsif @resource.parameters[:content]
         @resource.parameters[:content].actual_content
