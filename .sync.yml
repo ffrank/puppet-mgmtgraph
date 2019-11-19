@@ -12,6 +12,6 @@
       install:
         - bundle install
         - wget https://github.com/purpleidea/mgmt/releases/download/0.0.19/mgmt_0.0.19_amd64.deb
-        - dpkg -i mgmt_0.0.19_amd64.deb
+        - sudo dpkg -i mgmt_0.0.19_amd64.deb
       script:
         - acceptance/run_test.sh
