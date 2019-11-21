@@ -16,4 +16,4 @@
         - sudo apt install libvirt-dev libaugeas-dev
         - sudo dpkg -i mgmt_0.0.19_amd64.deb
       script:
-        - acceptance/run_test.sh
+        - sudo ./acceptance/run_test.sh
