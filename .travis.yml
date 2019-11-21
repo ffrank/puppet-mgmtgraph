@@ -23,20 +23,20 @@ stages:
 matrix:
   fast_finish: true
   include:
-    -
-      env: PUPPET_GEM_VERSION="~> 5.0" CHECK=parallel_spec
-      rvm: 2.4.5
-      stage: spec
-    -
-      env: PUPPET_GEM_VERSION="~> 6.0" CHECK=parallel_spec
-      rvm: 2.5.3
-      stage: spec
-    -
-      env: DEPLOY_TO_FORGE=yes
-      stage: deploy
-    -
-      env: CHECK="check:symlinks check:git_ignore check:dot_underscore check:test_file syntax lint metadata_lint"
-      stage: static
+          #    -
+          #      env: PUPPET_GEM_VERSION="~> 5.0" CHECK=parallel_spec
+          #      rvm: 2.4.5
+          #      stage: spec
+          #    -
+          #      env: PUPPET_GEM_VERSION="~> 6.0" CHECK=parallel_spec
+          #      rvm: 2.5.3
+          #      stage: spec
+          #    -
+          #      env: DEPLOY_TO_FORGE=yes
+          #      stage: deploy
+          #    -
+          #      env: CHECK="check:symlinks check:git_ignore check:dot_underscore check:test_file syntax lint metadata_lint"
+          #      stage: static
     -
       install: ["sudo apt update", "sudo apt install libvirt0 libxen-dev libvirt-dev libaugeas-dev","bundle install", "wget https://github.com/purpleidea/mgmt/releases/download/0.0.19/mgmt_0.0.19_amd64.deb",  "sudo dpkg -i mgmt_0.0.19_amd64.deb"]
       script: ["acceptance/run_test.sh"]
