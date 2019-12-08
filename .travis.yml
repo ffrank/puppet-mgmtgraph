@@ -38,7 +38,7 @@ matrix:
       env: CHECK="check:symlinks check:git_ignore check:dot_underscore check:test_file syntax lint metadata_lint"
       stage: static
     -
-      install: ["bundle install", "git clone https://github.com/purpleidea/mgmt.git", "sudo apt update", "sudo apt install golang-1.10-go", "cd mgmt", "echo $PATH", "dpkg -L golang-1.10-go", "ls /usr/lib/go-1.10/bin", "which go", "sudo which go", "sudo make deps", "make build", "sudo cp mgmt /usr/local/bin/"]
+      install: ["bundle install", "git clone https://github.com/purpleidea/mgmt.git", "sudo apt update", "sudo apt install golang-1.10-go", "cd mgmt", "echo $PATH", "dpkg -L golang-1.10-go", "ls /usr/lib/go-1.10/bin", "which go", "sudo echo $PATH", "sudo ln -s /usr/lib/go-1.10/bin/go /usr/local/bin/go", "sudo ln -s /usr/lib/go-1.10/bin/gofmt /usr/local/bin/gofmt", "sudo make deps", "make build", "sudo cp mgmt /usr/local/bin/"]
       script: ["sudo ./acceptance/run_test.sh"]
       stage: acceptance
       env: PATH=/bin:/usr/bin:/usr/local/bin:/usr/lib/go-1.10/bin
