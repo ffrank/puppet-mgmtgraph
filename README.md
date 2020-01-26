@@ -142,7 +142,7 @@ translatable, but raise warnings about specific parameters or values.
 
 ## Compatibility
 
-Supports Puppet `5.x` and `4.x`.
+Supports Puppet `5.x` and `6.x`.
 
 Supports `mgmt` 0.0.8 and higher (no earlier releases).
 

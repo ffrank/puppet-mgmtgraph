@@ -1,5 +1,10 @@
 # Alpha releases
 
+#### 0.4.4 2020-01-26
+
+* converted to PDK format
+* drop Puppet 4 support in favor of Puppet 6
+
 #### 0.4.3 2019-11-11
 
 * supports more parameters to `exec`
