@@ -1,5 +1,9 @@
 # Alpha releases
 
+#### 0.4.5 2020-01-26
+
+* fixes a metadata issue wrt. ffrank-yamlresource
+
 #### 0.4.4 2020-01-26
 
 * converted to PDK format
