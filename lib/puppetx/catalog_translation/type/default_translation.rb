@@ -28,9 +28,7 @@ PuppetX::CatalogTranslation::Type.new :default_translation do
 
   spawn(:timeout) { 30 }
 
-  spawn(:shell, :watchshell, :ifshell) { "/bin/bash" }
-
-  spawn(:watchcmd) { "while : ; do echo \"puppet run interval passed\" ; /bin/sleep #{Puppet[:runinterval]} ; done" }
+  spawn(:shell, :ifshell) { "/bin/bash" }
 
   # to determine sync state, do a noop run and look for a line like this:
   # Notice: /File[/tmp/prtest]/ensure: current_value file, should be absent (noop)
@@ -39,5 +37,5 @@ PuppetX::CatalogTranslation::Type.new :default_translation do
 
   spawn(:state) { :present }
 
-  spawn(:pollint) { 0 }
+  spawn(:pollint) { Puppet[:runinterval] }
 end
