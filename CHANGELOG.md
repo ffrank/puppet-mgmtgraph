@@ -1,5 +1,10 @@
 # Alpha releases
 
+#### 0.5.0 2020-01-29
+
+* drop watchcmd from the "puppet resource" default translation
+* drop support for mgmt < 0.0.16
+
 #### 0.4.5 2020-01-26
 
 * fixes a metadata issue wrt. ffrank-yamlresource

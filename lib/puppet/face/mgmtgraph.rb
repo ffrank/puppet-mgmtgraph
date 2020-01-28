@@ -2,7 +2,7 @@ require 'puppet/face'
 require 'puppetx/catalog_translation'
 require 'puppetx/catalog_translation/type'
 
-Puppet::Face.define(:mgmtgraph, '0.0.1') do
+Puppet::Face.define(:mgmtgraph, '0.5.0') do
   
   license "Apache 2"
   copyright "Felix Frank", 2016
