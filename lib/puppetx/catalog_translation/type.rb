@@ -13,7 +13,6 @@ module CatalogTranslation
       @name = name
       @output = name # can be overridden from DSL
       @translations = {}
-      @custom_title = false
       @catch_all = false
       instance_eval(&block)
 
@@ -109,17 +108,6 @@ module CatalogTranslation
         load_translator(type)
       end
       @instances[type] || @instances[:default_translation]
-    end
-
-    def title(resource)
-      if @custom_title
-        @resource = resource
-        result = @translations[:name][:block].call
-        @resource = nil
-        result
-      else
-        resource[:name]
-      end
     end
 
     # For testing only: unloads all translators.
@@ -220,10 +208,6 @@ module CatalogTranslation
 
     def emit(output)
       @output = output
-    end
-
-    def override_title
-      @custom_title = true
     end
 
     def catch_all

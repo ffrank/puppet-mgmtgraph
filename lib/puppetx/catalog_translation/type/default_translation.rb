@@ -1,8 +1,6 @@
 PuppetX::CatalogTranslation::Type.new :default_translation do
   emit :exec
 
-  override_title
-
   catch_all
 
   spawn :name do

@@ -186,6 +186,19 @@ title or parameter). Most translators need the following rule:
       resource[:name]
     end
 
+## Special Rules
+
+Some rules are not useful in regular translators, but are required for
+the more arcane "default translators", which are designed to handle arbitrary
+input types.
+
+At this time, the only example of this
+is the `catch_all` rule. It takes no parameters. When specified,
+it signals to the translation engine that any unconsumed parameters from
+the input resource should *not* be treated as a translation issue.
+This implies that such a translator uses special rules to handle the
+full input, without declaring rules for all parameters.
+
 ## Reporting
 
 To give feedback to the user, rule blocks can use two DSL methods:
