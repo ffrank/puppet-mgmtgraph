@@ -144,7 +144,9 @@ translatable, but raise warnings about specific parameters or values.
 
 Supports Puppet `5.x` and `6.x`.
 
-Supports `mgmt` 0.0.16 and higher (no earlier releases).
+Supports `mgmt` 0.0.21 and higher.
+
+Supports `mgmt` 0.0.16 and higher *when* sticking to `no-pippet` mode (but no earlier releases).
 
 ## Extending
 
