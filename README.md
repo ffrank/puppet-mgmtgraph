@@ -27,12 +27,12 @@ that were installed by non-root users are only available for the respective user
 
 ## Usage
 
-It is no longer necessary to invoke `puppet mgmtgraph` directly, since it's possible to use `mgmt`'s `--puppet` switch
+It is no longer necessary to invoke `puppet mgmtgraph` directly, since it's possible to use mgmt's `--puppet` switch
 to load the resulting graph directly.
 
 Still, for testing and debugging, the tool is still useful. It can also make sense to save a translated YAML graph
 to a file in order to cache it. After all, building the catalog is usually the most time consuming part when running
-`mgmt` from a Puppet manifest.
+mgmt from a Puppet manifest.
 
 ### Manual invocation
 
@@ -59,22 +59,22 @@ Finally, run the graph through [mgmt](https://github.com/purpleidea/mgmt/)
 
 ### Conservative mode
 
-In its default ("optimistic") mode, `puppet mgmtgraph` will emit as many native `mgmt` resources as possible.
+In its default ("optimistic") mode, `puppet mgmtgraph` will emit as many native mgmt resources as possible.
 This will drop some attribute values to the floor, however. Consider the following simple manifest:
 
     file { "/tmp/exchange_file": ensure => file, seltype => "tmp_t" }
 
-As long as `mgmt` has no SELinux support, it can create and maintain the file, but will ignore its SEL context.
+As long as mgmt has no SELinux support, it can create and maintain the file, but will ignore its SEL context.
 In a more complex manifest context, this is likely inadequate to prepare the system for the synchronization
 of all dependent resources.
 
-In order to make sure that `mgmt` applies such a catalog correctly, it has to resort to the `puppet resource`
-workaround that is used for resources that are not supported by `mgmt` at all (see below).
+In order to make sure that mgmt applies such a catalog correctly, it has to resort to the `puppet resource`
+workaround that is used for resources that are not supported by mgmt at all (see below).
 This behavior is now available in the form of the `conservative` mode:
 
     puppet mgmtgraph --conservative --code 'file { "/tmp/exchange_file": ensure => file, seltype => "tmp_t" }'
 
-The `mgmt` integration has no way of passing this flag. However, eventually this mode will probably become
+The mgmt integration has no way of passing this flag. However, eventually this mode will probably become
 the default, with an optional `--optimistic` flag to revert to the current default.
 
 ### Collecting translation problems
@@ -89,7 +89,7 @@ The `stats` command can be used just like `print` with respect to its parameters
 printing the graph structure for mgmt, it presents a consolidated list of translation issues.
 
 This will help you determine which params that aren't yet natively supported in
-`mgmt` might be good candidates that you could send a
+mgmt might be good candidates that you could send a
 [patch](https://github.com/purpleidea/mgmt/) for.
 
 #### Example
@@ -106,7 +106,7 @@ Will produce output that includes:
 1x File[...] cannot translate attribute 'seltype', attribute is ignored
 ```
 
-Since there is no equivalent for the `file` param named `seltype` in `mgmt` yet.
+Since there is no equivalent for the `file` param named `seltype` in mgmt yet.
 
 ## Limitations
 
@@ -115,17 +115,28 @@ in classes and defined types should work.
 
 The set of supported catalog elements is still quite small:
 
- * file resources
- * exec resources
- * service resources
- * package resources
- * notify resources
+* augeas
+* ec2\_instance
+* exec
+* file
+* group
+* mount
+* notify
+* package
+* service
+* user
 
-For most of these, `mgmt` does not support all available properties and parameters.
+For most of these, mgmt does not support all available properties and parameters.
 Whenever an attribute is ignored because of that, a warning message is printed during translation.
-There might be edge cases were this does not work reliably.
+There might be edge cases where this does not work reliably.
 
-Resources of unsupported types are rendered into `exec` vertices of the form
+Resources of unsupported types are rendered into pseudo-resources of the special `pippet` type
+(a portmanteau of "pipe" and "puppet"). When mgmt processes a graph containing these nodes,
+it will hand them over to Puppet for synchronizing them.
+
+When working with older versions of mgmt before 0.0.21, the `--no-pippet` flag can be
+specified in order to replace this technique with a legacy workaround. In this mode, the
+unsupported resources will be turned into `exec` resources of the following form instead:
 
 ```yaml
 exec:
@@ -134,8 +145,9 @@ exec:
   ifcmd: puppet yamlresource ... --noop | grep -q ^Notice:
 ```
 
-This means that testing the sync state of such a resource requires `mgmt` to launch a `puppet yamlresource` process.
+This means that testing the sync state of such a resource requires mgmt to launch a `puppet yamlresource` process.
 If that reports a change in `noop` mode, another `puppet yamlresource` is launched to perform the sync.
+(The jury is still out on whether the `noop` call is actually required.)
 
 In [conservative mode](#conservative-mode), this technique is also applied to resources that are generally
 translatable, but raise warnings about specific parameters or values.
@@ -144,9 +156,9 @@ translatable, but raise warnings about specific parameters or values.
 
 Supports Puppet `5.x` and `6.x`.
 
-Supports `mgmt` 0.0.21 and higher.
+Supports mgmt 0.0.21 and higher.
 
-Supports `mgmt` 0.0.16 and higher *when* sticking to `no-pippet` mode (but no earlier releases).
+Supports mgmt 0.0.16 and higher *when* sticking to `no-pippet` mode (but no earlier releases).
 
 ## Extending
 
@@ -155,5 +167,4 @@ See the [DSL Guide](DSL.md).
 ## TODO
 
 * easier DSL (e.g. add a method to get at the namevar)
-* support for export and import of resources (if possible)
-* enhance performance when delegating resources to Puppet
+* find a way to properly model resource refreshing in mgmt
