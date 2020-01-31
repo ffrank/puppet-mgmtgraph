@@ -40,7 +40,7 @@ module CatalogTranslation
 
       if @catch_all
         self.class.count(:unsupported)
-        translation_failure "cannot be translated natively, falling back to 'exec puppet resource'"
+        translation_failure "cannot be translated natively, falling back to #{self.class.default_description}"
       end
 
       @translations.each do |attr,translation|
@@ -88,7 +88,7 @@ module CatalogTranslation
         if !@clean_translation
           translation_warning("emitting a `exec puppet resource` node because of the errors above.")
           @resource = nil
-          result = PuppetX::CatalogTranslation::Type.translation_for(:default_translation).translate!(resource)
+          result = PuppetX::CatalogTranslation::Type.translation_for(self.class.default_translator).translate!(resource)
           self.class.count(:fallback)
           self.class.count(:unsupported, -1)
           return result
@@ -101,13 +101,32 @@ module CatalogTranslation
     end
 
     def self.translation_for(type)
+      unless @instances.has_key? :default_translation_to_pippet
+        load_translator(:default_translation_to_pippet)
+      end
       unless @instances.has_key? :default_translation
         load_translator(:default_translation)
       end
       unless @instances.has_key? type
         load_translator(type)
       end
-      @instances[type] || @instances[:default_translation]
+      @instances[type] || @instances[default_translator]
+    end
+
+    def self.default_translator
+      if PuppetX::CatalogTranslation.pippet_enabled?
+        :default_translation_to_pippet
+      else
+        :default_translation
+      end
+    end
+
+    def self.default_description
+      if PuppetX::CatalogTranslation.pippet_enabled?
+        "pippet"
+      else
+        "'exec puppet resource'"
+      end
     end
 
     # For testing only: unloads all translators.

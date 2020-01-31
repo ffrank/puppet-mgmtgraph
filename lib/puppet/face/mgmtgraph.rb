@@ -13,11 +13,18 @@ Puppet::Face.define(:mgmtgraph, '0.5.0') do
     default
     summary "Print the graph in YAML format"
     option "--conservative" do
-      summary "Emit `exec puppet resource` nodes in case of translation limitations"
+      summary "Emit pippet nodes in case of translation limitations"
+    end
+    option "--no-pippet" do
+      summary "Use legacy `exec puppet resource` nodes in favor of pippet"
     end
 
+
     when_invoked do |options|
-      graph = Puppet::Face[@name, @version].find(:conservative => options[:conservative])
+      graph = Puppet::Face[@name, @version].find(
+	        :conservative => options[:conservative],
+		:no_pippet => options[:no_pippet],
+      )
       puts YAML.dump graph
     end
   end
@@ -25,8 +32,12 @@ Puppet::Face.define(:mgmtgraph, '0.5.0') do
   action :find do
     summary "Return the graph in hash format"
     option "--conservative" do
-      summary "Emit `exec puppet resource` nodes in case of translation limitations"
+      summary "Emit pippet nodes in case of translation limitations"
     end
+    option "--no-pippet" do
+      summary "Use legacy `exec puppet resource` nodes in favor of pippet"
+    end
+
     when_invoked do |options|
 
       PuppetX::CatalogTranslation.assert_puppet_version
@@ -37,6 +48,10 @@ Puppet::Face.define(:mgmtgraph, '0.5.0') do
 	PuppetX::CatalogTranslation.set_mode(:conservative)
       else
 	PuppetX::CatalogTranslation.set_mode(:optimistic)
+      end
+
+      if ! options[:no_pippet].nil?
+        PuppetX::CatalogTranslation.disable_pippet
       end
 
       PuppetX::CatalogTranslation.to_mgmt(catalog.to_ral)

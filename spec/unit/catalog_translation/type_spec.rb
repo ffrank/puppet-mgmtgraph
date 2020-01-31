@@ -18,9 +18,9 @@ describe "PuppetX::CatalogTranslation::Type" do
 
       # this is icky: should actually be a test for "when translation is unclean"
       # but that is controlled by a private method -_-
-      it "returns an exec resource" do
+      it "returns a pippet resource" do
         type, _ = translator.translate!(resource)
-        expect(type).to equal(:exec)
+        expect(type).to equal(:pippet)
       end
     end
 
@@ -44,13 +44,14 @@ describe "PuppetX::CatalogTranslation::Type" do
 
   describe "::translation_for" do
     it "loads the default translator if that has not yet happened" do
+      PuppetX::CatalogTranslation::Type.expects(:load_translator).with(:default_translation_to_pippet)
       PuppetX::CatalogTranslation::Type.expects(:load_translator).with(:default_translation)
       PuppetX::CatalogTranslation::Type.expects(:load_translator).with(:file)
       PuppetX::CatalogTranslation::Type.translation_for(:file)
     end
 
     it "returns the default translator if there is no specific one" do
-      default_translation = PuppetX::CatalogTranslation::Type.translation_for(:default_translation)
+      default_translation = PuppetX::CatalogTranslation::Type.translation_for(:default_translation_to_pippet)
       cron_translation = PuppetX::CatalogTranslation::Type.translation_for(:cron)
       expect(cron_translation).to be default_translation
     end

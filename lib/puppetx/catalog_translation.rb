@@ -8,6 +8,7 @@ module PuppetX::CatalogTranslation
   MINPUPPETVERSION='4.0.0'
 
   @mode = :optimistic
+  @pippet = true
 
   def self.to_mgmt(catalog)
     result = {
@@ -98,6 +99,14 @@ module PuppetX::CatalogTranslation
 
   def self.mode
     return @mode
+  end
+
+  def self.disable_pippet
+    @pippet = false
+  end
+
+  def self.pippet_enabled?
+    return @pippet
   end
 
   def self.assert_puppet_version

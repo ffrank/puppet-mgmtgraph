@@ -31,9 +31,8 @@ describe "PuppetX::CatalogTranslation::Type::File" do
     Puppet.expects(:err).with(regexp_matches(/cannot be translated natively/))
 
     graph = PuppetX::CatalogTranslation.to_mgmt(catalog)
-    # the puppet yamlresource workaround is applied
     expect(graph['resources']).to_not include 'file'
-    expect(graph['resources']).to     include 'exec'
+    expect(graph['resources']).to     include 'pippet'
   end
 
   it "reports an error when multiple sources are specified" do
@@ -50,6 +49,6 @@ describe "PuppetX::CatalogTranslation::Type::File" do
 
     graph = PuppetX::CatalogTranslation.to_mgmt(catalog)
     expect(graph['resources']).to_not include 'file'
-    expect(graph['resources']).to     include 'exec'
+    expect(graph['resources']).to     include 'pippet'
   end
 end

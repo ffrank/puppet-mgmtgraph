@@ -24,7 +24,7 @@ describe "PuppetX::CatalogTranslation::Type::Package" do
 
       # become 'exec puppet yamlresource' through the workaround
       expect(graph['resources']).to_not include('pkg')
-      expect(graph['resources']).to     include('exec')
+      expect(graph['resources']).to     include('pippet')
     end
   end
 end

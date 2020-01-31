@@ -41,12 +41,11 @@ describe "PuppetX::CatalogTranslation" do
     expect(graph['resources']['svc'][0]).to_not include('startup')
   end
 
-  it "generates `exec puppet yamlresource` vertices for untranslatable resources" do
+  it "generates pippet vertices for untranslatable resources" do
     catalog = resource_catalog("cron { 'spec': ensure => present, command => 'rspec spec', user => 'root', minute => 9 }")
     graph = PuppetX::CatalogTranslation.to_mgmt(catalog)
     expect(graph['resources']).to_not include('cron')
-    expect(graph['resources']).to     include('exec')
-    expect(graph['resources']['exec'][0]['cmd']).to match(/^puppet yamlresource cron 'spec'/)
+    expect(graph['resources']).to     include('pippet')
   end
 
 
@@ -54,11 +53,11 @@ describe "PuppetX::CatalogTranslation" do
     ensure_core_module 'host'
     catalog = resource_catalog('host { "a": before => Host["b"] } host { "b": }')
     graph = PuppetX::CatalogTranslation.to_mgmt(catalog)
-    expect(graph['resources']['exec'][0]['cmd']).to_not include('before')
+    expect(graph['resources']['pippet'][0]).to_not include('before')
     expect(graph['edges']).to include(
       {"name"=>"Host[a] -> Host[b]",
-         "from"=>{"kind"=>"exec", "name"=>"Host:a"},
-         "to"=>{"kind"=>"exec", "name"=>"Host:b"}
+         "from"=>{"kind"=>"pippet", "name"=>"Host[a]"},
+         "to"=>{"kind"=>"pippet", "name"=>"Host[b]"}
       }
     )
   end
@@ -71,11 +70,11 @@ describe "PuppetX::CatalogTranslation" do
       expect(graph['resources']).to_not include('exec')
     end
 
-    it "generates `exec puppet yamlresource` vertices for resources that fail translation" do
+    it "generates pippet vertices for resources that fail translation" do
       catalog = resource_catalog("service { 'spec': provider => 'init' }")
       graph = PuppetX::CatalogTranslation.to_mgmt(catalog)
       expect(graph['resources']).to_not include('svc')
-      expect(graph['resources']).to     include('exec')
+      expect(graph['resources']).to     include('pippet')
     end
   end
 
@@ -84,20 +83,19 @@ describe "PuppetX::CatalogTranslation" do
       PuppetX::CatalogTranslation.stubs(:mode).returns(:conservative)
     end
 
-    it "generates `exec puppet yamlresource` vertices for problematic resources" do
+    it "generates pippet vertices for problematic resources" do
       catalog = resource_catalog("service { 'spec': hasrestart => true, provider => 'systemd' }")
       graph = PuppetX::CatalogTranslation.to_mgmt(catalog)
       expect(graph['resources']).to_not include('svc')
-      expect(graph['resources']).to     include('exec')
-      expect(graph['resources']['exec'][0]['cmd']).to match(/^puppet yamlresource service 'spec'/)
+      expect(graph['resources']).to     include('pippet')
     end
 
     it "preserves edges from and to wrapped resources" do
       catalog = resource_catalog("file { '/tmp/foo': backup => 'specbucket' } -> service { 'spec': hasrestart => true, provider => 'systemd' }")
       graph = PuppetX::CatalogTranslation.to_mgmt(catalog)
       expect(graph['edges']).to include({"name"=>"File[/tmp/foo] -> Service[spec]",
-                                         "from"=>{"kind"=>"exec", "name"=>"File:/tmp/foo"},
-                                         "to"=>{"kind"=>"exec", "name"=>"Service:spec"}})
+                                         "from"=>{"kind"=>"pippet", "name"=>"File[/tmp/foo]"},
+                                         "to"=>{"kind"=>"pippet", "name"=>"Service[spec]"}})
       graph['edges'].each do |edge|
         expect(edge['from']).to_not include( { 'kind' => 'svc' } )
         expect(edge['from']).to_not include( { 'kind' => 'file' } )
