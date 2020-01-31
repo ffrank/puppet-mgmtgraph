@@ -1,6 +1,6 @@
 {
   "name": "ffrank-mgmtgraph",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "author": "Felix Frank",
   "summary": "Puppet module that adds the mgmtgraph face",
   "license": "Apache-2.0",
@@ -10,7 +10,7 @@
   "dependencies": [
     {
       "name": "ffrank-yamlresource",
-      "version_requirement": ">= 0.1.0"
+      "version_requirement": ">= 0.2.0"
     }
   ],
   "operatingsystem_support": [

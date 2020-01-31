@@ -1,5 +1,12 @@
 # Alpha releases
 
+#### 0.6.0 2020-01-31
+
+* replaces the `puppet yamlresource` workaround with `pippet` per default
+* adds the `--no-pippet` option for backwards compatibility
+* raises version requirement for ffrank-yamlresource to 0.2.0
+* raises version requirement for mgmt to 0.0.21 for full support
+
 #### 0.5.0 2020-01-29
 
 * drop watchcmd from the "puppet resource" default translation
