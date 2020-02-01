@@ -1,5 +1,9 @@
 # Alpha releases
 
+#### 0.6.1 2020-02-01
+
+* fix a bug that would lead to invalid pippet node structure
+
 #### 0.6.0 2020-01-31
 
 * replaces the `puppet yamlresource` workaround with `pippet` per default
