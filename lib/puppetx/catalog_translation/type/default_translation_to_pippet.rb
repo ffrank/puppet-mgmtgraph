@@ -19,13 +19,14 @@ PuppetX::CatalogTranslation::Type.new :default_translation_to_pippet do
   end
 
   spawn :params do
-    @resource.to_hash.reject { |attr,value|
+    param_hash = @resource.to_hash.reject { |attr,value|
       [ :name,
         # ignore relational metaparameters, those are handled through the actual
         # edges in the RAL graph
         :before, :require, :notify, :subscribe,
       ].include? attr
     }
+    Psych.to_json(param_hash).chomp
   end
 
   spawn(:pollint) { Puppet[:runinterval] }

@@ -23,4 +23,10 @@ describe "PuppetX::CatalogTranslation::Type::DefaultTranslationToPippet" do
     graph = PuppetX::CatalogTranslation.to_mgmt(catalog)
     expect(graph['resources']['pippet'][0]['name']).to match /^Cron\[/
   end
+
+  it "generates parameters of type string or int only" do
+    catalog = resource_catalog(manifest)
+    graph = PuppetX::CatalogTranslation.to_mgmt(catalog)
+    expect(graph['resources']['pippet'][0].map { |param,value| value }).to all(be_a(String).or be_an(Integer))
+  end
 end
