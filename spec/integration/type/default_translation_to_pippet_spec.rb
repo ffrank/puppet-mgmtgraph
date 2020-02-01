@@ -2,6 +2,9 @@ require 'spec_helper'
 
 describe "PuppetX::CatalogTranslation::Type::DefaultTranslationToPippet" do
   let(:manifest) { "cron { 'test': ensure => 'present', command => 'echo spec' }" }
+  before :each do
+    ensure_core_module 'cron'
+  end
 
   it "emits an pippet node" do
     catalog = resource_catalog(manifest)
