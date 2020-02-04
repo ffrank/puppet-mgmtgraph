@@ -64,7 +64,7 @@ module PuppetX::CatalogTranslation
       Puppet[:log_level] = "warning"
       reset_log_level = true
     end
-    if Puppet[:manifest].nil? and Puppet[:code].nil?
+    if Puppet[:manifest].nil? and ( Puppet[:code].nil? or Puppet[:code].empty? )
       Puppet::Face[:catalog, "0.0"].set_terminus(:rest)
     end
     catalog = Puppet::Face[:catalog, "0.0"].find
