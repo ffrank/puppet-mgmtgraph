@@ -1,6 +1,7 @@
 require 'spec_helper'
 
 describe "PuppetX::CatalogTranslation" do
+  subject { PuppetX::CatalogTranslation }
   let(:empty_catalog) { Puppet::Resource::Catalog.new }
 
   describe "::to_mgmt" do
@@ -129,6 +130,38 @@ describe "PuppetX::CatalogTranslation" do
     it "does not accept unknown parameter values" do
       [ :great, :weird, :amazing, :elastic ].each do |param|
         expect { PuppetX::CatalogTranslation.set_mode(param) }.to raise_error(/invalid .* mode/)
+      end
+    end
+  end
+
+  describe "::get_catalog" do
+    let(:catalog_face) { Puppet::Face[:catalog, "0.0"] }
+    before(:each) do
+      catalog_face.expects(:find)
+    end
+
+    context "when a manifest file was passed on the command line" do
+      before(:each) { Puppet[:manifest] = '/path/to/spec.rb' }
+
+      it "does not touch the catalog indirection terminus" do
+        catalog_face.expects(:set_terminus).never
+        subject.get_catalog
+      end
+    end
+
+    context "when inline code was passed on the command line" do
+      before(:each) { Puppet[:code] = 'file { "/tmp/specfile": ensure => "file" }' }
+
+      it "does not touch the catalog indirection terminus" do
+        catalog_face.expects(:set_terminus).never
+        subject.get_catalog
+      end
+    end
+
+    context "when no code is passed on he command line" do
+      it "sets the catalog indirection terminus to 'rest'" do
+        catalog_face.expects(:set_terminus).with(:rest)
+        subject.get_catalog
       end
     end
   end
