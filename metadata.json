@@ -49,7 +49,7 @@
     "catalog",
     "mgmt"
   ],
-  "pdk-version": "1.14.1",
-  "template-url": "pdk-default#1.14.1",
-  "template-ref": "1.14.1-0-g0b5b39b"
+  "pdk-version": "2.6.1",
+  "template-url": "pdk-default#2.7.1",
+  "template-ref": "tags/2.7.1-0-g9a16c87"
 }
