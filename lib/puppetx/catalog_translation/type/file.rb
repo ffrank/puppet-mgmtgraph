@@ -104,5 +104,11 @@ module PuppetX::CatalogTranslation
       end
     end
 
+    ignore :max_files do |value|
+      if value != 0
+        translation_warning "mgmt does not support a max_files limit for file resources, ignoring"
+      end
+    end
+
   end
 end
