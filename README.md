@@ -1,6 +1,6 @@
 #puppet-mgmtgraph
 
-[![Build Status](https://travis-ci.org/ffrank/puppet-mgmtgraph.svg?branch=master)](https://travis-ci.org/ffrank/puppet-mgmtgraph)
+[![Spec tests](https://github.com/ffrank/puppet-mgmtgraph/actions/workflows/spec.yml/badge.svg)](https://github.com/ffrank/puppet-mgmtgraph/actions/workflows/spec.yml)
 
 Adds the `:mgmtgraph` face and `puppet mgmtgraph` subcommand to [Puppet](https://github.com/puppetlabs/puppet).
 It allows you to compile simple Puppet manifest into a data structure that is
