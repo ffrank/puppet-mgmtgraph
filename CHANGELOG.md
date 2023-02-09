@@ -1,5 +1,12 @@
 # Alpha releases
 
+#### 0.6.2 2023-02-09
+
+* fix a bug that would prevent agent mode from working right
+* various plumbing improvements to get with the times
+
+This release contains contributed code from Darragh Bailey (@electrofelix)
+
 #### 0.6.1 2020-02-01
 
 * fix a bug that would lead to invalid pippet node structure
