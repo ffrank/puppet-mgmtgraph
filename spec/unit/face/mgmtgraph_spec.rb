@@ -55,6 +55,7 @@ describe "puppet mgmtgraph" do
     end
 
     it "invokes the catalog translation module's stats method" do
+      PuppetX::CatalogTranslation.expects(:get_catalog).returns(empty_catalog)
       PuppetX::CatalogTranslation.expects(:stats)
       subject.stats
     end
