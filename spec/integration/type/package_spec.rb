@@ -8,7 +8,7 @@ describe "PuppetX::CatalogTranslation::Type::Package" do
   end
 
   it "maps absent/purged to uninstalled" do
-    catalog = resource_catalog("package { 'cowsay': ensure => absent; 'emacs': ensure => 'purged'; }")
+    catalog = resource_catalog("Package { provider => 'apt' } package { 'cowsay': ensure => absent; 'emacs': ensure => 'purged'; }")
     graph = PuppetX::CatalogTranslation.to_mgmt(catalog)
     graph['resources']['pkg'].each do |res|
       expect(res).to include('state' => 'uninstalled')
@@ -16,10 +16,9 @@ describe "PuppetX::CatalogTranslation::Type::Package" do
   end
 
   it "fails on unsupported ensure values" do
-    # FIXME: removed 'held' from this list because it can make Puppet stumble on yum based systems
-    %w{1.3.1-5 latest 10bpo81}.each do |ensure_value|
+    %w{1.3.1-5 latest 10bpo81 held}.each do |ensure_value|
       Puppet.expects(:err).with(regexp_matches(/cannot be translated/)).twice
-      catalog = resource_catalog("package { 'cowsay': ensure => '#{ensure_value}' }")
+      catalog = resource_catalog("Package { provider => 'apt' } package { 'cowsay': ensure => '#{ensure_value}' }")
       graph = PuppetX::CatalogTranslation.to_mgmt(catalog)
 
       # become 'exec puppet yamlresource' through the workaround

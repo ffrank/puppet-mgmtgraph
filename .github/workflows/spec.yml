@@ -1,0 +1,19 @@
+name: Spec tests
+run-name: ${{ github.actor }} pushed some commits
+on: [push, pull_request]
+jobs:
+  rspec:
+    strategy:
+      matrix:
+        gemfile: [ puppet5, puppet6, puppet7 ]
+        os: [ ubuntu-latest, macos-latest ]
+    runs-on: ${{ matrix.os }}
+    env:
+      BUNDLE_GEMFILE: ${{ github.workspace }}/gemfiles/${{ matrix.gemfile }}.gemfile
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '2.6.3'
+          bundler-cache: true
+      - run: bundle exec rake spec
