@@ -1,14 +1,4 @@
-# A sample Gemfile
-source "https://rubygems.org"
+eval 'Gemfile.common'
 
-# weird hack, unclear why e.g. 'irb' needs this:
-$:.unshift('lib')
-
-# gem "rails"
+# default puppet gem for development
 gem "puppet", ENV['PUPPET_GEM_VERSION'] || '~> 6.2'
-gem "puppetlabs_spec_helper"
-gem "puppet-blacksmith"
-
-if File.exists? "#{__FILE__}.local"
-  eval(File.read("#{__FILE__}.local"), binding)
-end

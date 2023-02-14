@@ -1,0 +1,13 @@
+# A sample Gemfile
+source "https://rubygems.org"
+
+# weird hack, unclear why e.g. 'irb' needs this:
+$:.unshift('lib')
+
+# gem "rails"
+gem "puppetlabs_spec_helper"
+gem "puppet-blacksmith"
+
+if File.exists? "#{__FILE__}.local"
+  eval(File.read("#{__FILE__}.local"), binding)
+end
