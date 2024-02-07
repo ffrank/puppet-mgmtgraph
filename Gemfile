@@ -1,4 +1,4 @@
-eval 'Gemfile.common'
+eval(File.read('Gemfile.common'), binding)
 
 # default puppet gem for development
-gem "puppet", ENV['PUPPET_GEM_VERSION'] || '~> 6.2'
+gem "puppet", ENV['PUPPET_GEM_VERSION'] || '~> 8.0'
