@@ -32,7 +32,7 @@ module PuppetX::CatalogTranslation
     end
 
     spawn :group do
-      if @resource[:gid] =~ /[a-z]/
+      if @resource[:gid].is_a? String
         @resource[:gid]
       end
     end
