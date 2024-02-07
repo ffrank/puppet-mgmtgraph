@@ -1,0 +1,2 @@
+eval(File.read('Gemfile.common'), binding)
+gem "puppet", "~> 8.0"
