@@ -1,3 +1,10 @@
+# Beta releases
+
+#### 0.7.0 2024-02-24
+
+* add support for Puppet 8
+* fix rest client to support puppetserver
+
 # Alpha releases
 
 #### 0.6.2 2023-02-09
