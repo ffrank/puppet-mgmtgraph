@@ -1,0 +1,20 @@
+#!/bin/bash
+
+set -e
+
+testdir=$( dirname $0 )
+
+if [ -z "$testdir" -o "$testdir" == "/" ] ; then
+	echo >&2 "tests directory '$testdir' is unsafe, bailing out"
+	exit 1
+fi
+
+for test in $testdir/test_* ; do
+	test -x $test || continue
+	echo "[ACCEPTANCE] Running $( basename $test ) ..."
+	if ! ./$test ; then
+		echo FAIL
+		break
+	fi
+	echo
+done

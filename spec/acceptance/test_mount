@@ -1,10 +1,20 @@
 #!/bin/bash
 
+mgmt=$( which mgmt )
+
+[ "$mgmt" ] || fail mgmt binary not found
+
+if [ $UID -ne 0 ] ; then
+	mgmt="sudo -E --preserve-env=PATH,RUBYOPT $mgmt"
+fi
+
 . `dirname $0`/shared.sh
 
-mount_point=/mnt/acceptance_mount
+mount_point=/tmp/acceptance_mount
 fs_file=/tmp/loopdevice
 manifest="mount { '$mount_point': device => '$fs_file', ensure => 'mounted' }"
+
+assert ! grep -q $mount_point /proc/mounts
 
 mkdir -p $mount_point \
 	|| fail "could not prepare mount point at $mount_point"
@@ -12,15 +22,15 @@ mkdir -p $mount_point \
 dd if=/dev/zero of=$fs_file bs=1M count=10 \
 	|| fail "could not create empty file $fs_file"
 
-mke2fs $fs_file \
+/sbin/mke2fs $fs_file \
 	|| fail "could not create filesystem in file $fs_file"
 
-mgmt run --tmp-prefix --converged-timeout 5 \
+$mgmt run --tmp-prefix --converged-timeout 15 \
 	puppet 'mount { "'$mount_point'": device => "'$fs_file'", fstype => "ext2", options => "loop,rw", ensure => "mounted" }'
 
-assert grep -q $fs_file /proc/mounts
+assert grep -q $mount_point /proc/mounts
 
-mgmt run --tmp-prefix --converged-timeout 5 \
+$mgmt run --tmp-prefix --converged-timeout 15 \
 	puppet 'mount { "'$mount_point'": device => "'$fs_file'", ensure => "unmounted" }'
 
-assert ! grep -q $fs_file /proc/mounts
+assert ! grep -q $mount_point /proc/mounts
