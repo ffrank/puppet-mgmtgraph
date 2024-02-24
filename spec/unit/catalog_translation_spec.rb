@@ -122,14 +122,12 @@ describe "PuppetX::CatalogTranslation" do
 
   describe "::get_catalog" do
     let(:catalog_face) { Puppet::Face[:catalog, "0.0"] }
-    before(:each) do
-      catalog_face.expects(:find)
-    end
 
     context "when a manifest file was passed on the command line" do
       before(:each) { Puppet[:manifest] = '/path/to/spec.rb' }
 
       it "does not touch the catalog indirection terminus" do
+        catalog_face.expects(:find)
         catalog_face.expects(:set_terminus).never
         subject.get_catalog
       end
@@ -138,15 +136,15 @@ describe "PuppetX::CatalogTranslation" do
     context "when inline code was passed on the command line" do
       before(:each) { Puppet[:code] = 'file { "/tmp/specfile": ensure => "file" }' }
 
-      it "does not touch the catalog indirection terminus" do
-        catalog_face.expects(:set_terminus).never
+      it "does not use the catalog face" do
+        catalog_face.expects(:find).never
         subject.get_catalog
       end
     end
 
     context "when no code is passed on he command line" do
-      it "sets the catalog indirection terminus to 'rest'" do
-        catalog_face.expects(:set_terminus).with(:rest)
+      it "does not use the catalog face" do
+        catalog_face.expects(:find).never
         subject.get_catalog
       end
     end

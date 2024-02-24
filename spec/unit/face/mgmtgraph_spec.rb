@@ -16,10 +16,21 @@ describe "puppet mgmtgraph" do
   end
 
   describe "find" do
-    it "uses the find action of the catalog face" do
-      Puppet::Face[:catalog, catalog_face_version].expects(:find).returns Puppet::Resource::Catalog.new
-      expect(subject.find).to be_a Hash
+    context "when a manifest file is passed on the command line" do
+      before(:each) { Puppet[:manifest] = '/path/to/spec.rb' }
+      it "uses the find action of the catalog face" do
+        Puppet::Face[:catalog, catalog_face_version].expects(:find).returns Puppet::Resource::Catalog.new
+        expect(subject.find).to be_a Hash
+      end
     end
+
+    context "when no manifest file is passed on the command line" do
+      before(:each) { Puppet[:manifest] = nil }
+      it "does not use the find action of the catalog face" do
+        Puppet::Face[:catalog, catalog_face_version].expects(:find).never
+      end
+    end
+
 
     it "sends the catalog to the Catalog_Translation module" do
       Puppet::Face[:catalog, catalog_face_version].stubs(:find).returns Puppet::Resource::Catalog.new

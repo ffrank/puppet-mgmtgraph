@@ -1,6 +1,16 @@
 require 'puppet/resource/catalog'
 require 'puppet/type'
+require 'puppet/configurer'
 require 'puppetx/catalog_translation/type'
+
+class Puppet::Configurer
+  def get_simple_catalog
+    report = Puppet::Transaction::Report.new(nil, @environment, nil, nil, Time.now)
+    options = { :report => report }
+    query_options, facts = get_facts(options)
+    prepare_and_retrieve_catalog(nil, facts, options, query_options)
+  end
+end
 
 module PuppetX; end
 
@@ -64,10 +74,12 @@ module PuppetX::CatalogTranslation
       Puppet[:log_level] = "warning"
       reset_log_level = true
     end
-    if Puppet[:manifest].nil? and ( Puppet[:code].nil? or Puppet[:code].empty? )
-      Puppet::Face[:catalog, "0.0"].set_terminus(:rest)
+    if Puppet[:manifest].nil?
+      configurer = Puppet::Configurer.new
+      catalog = configurer.get_simple_catalog
+    else
+      catalog = Puppet::Face[:catalog, "0.0"].find
     end
-    catalog = Puppet::Face[:catalog, "0.0"].find
     if reset_log_level
       Puppet[:log_level] = "notice"
     end
