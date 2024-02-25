@@ -5,7 +5,7 @@ require 'puppetx/catalog_translation/type'
 
 class Puppet::Configurer
   def get_simple_catalog
-    report = Puppet::Transaction::Report.new(nil, @environment, nil, nil, Time.now)
+    report = Puppet::Transaction::Report.new(nil, @environment, nil, nil)
     options = { :report => report }
     query_options, facts = get_facts(options)
     prepare_and_retrieve_catalog(nil, facts, options, query_options)
