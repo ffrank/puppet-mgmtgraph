@@ -12,7 +12,9 @@ class Puppet::Configurer
       prepare_and_retrieve_catalog(nil, facts, options, query_options)
     else
       query_options = get_facts(options)
-      if Puppet::Util::Package.versioncmp(Puppet::PUPPETVERSION, '6.12.0') != -1
+      versions_with_cached_parameter = %w{5.5.18 5.5.19 5.5.20 5.5.21 5.5.22 6.4.5}
+      if Puppet::Util::Package.versioncmp(Puppet::PUPPETVERSION, '6.12.0') != -1 or
+          versions_with_cached_parameter.include?(Puppet::PUPPETVERSION)
         prepare_and_retrieve_catalog(nil, options, query_options)
       else
         prepare_and_retrieve_catalog(options, query_options)
