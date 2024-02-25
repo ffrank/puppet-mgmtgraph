@@ -7,8 +7,17 @@ class Puppet::Configurer
   def get_simple_catalog
     report = Puppet::Transaction::Report.new(nil, @environment, nil, nil)
     options = { :report => report }
-    query_options, facts = get_facts(options)
-    prepare_and_retrieve_catalog(nil, facts, options, query_options)
+    if Puppet::Util::Package.versioncmp(Puppet::PUPPETVERSION, '6.14.0') != -1
+      query_options, facts = get_facts(options)
+      prepare_and_retrieve_catalog(nil, facts, options, query_options)
+    else
+      query_options = get_facts(options)
+      if Puppet::Util::Package.versioncmp(Puppet::PUPPETVERSION, '6.12.0') != -1
+        prepare_and_retrieve_catalog(nil, options, query_options)
+      else
+        prepare_and_retrieve_catalog(options, query_options)
+      end
+    end
   end
 end
 
