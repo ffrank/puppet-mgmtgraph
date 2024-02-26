@@ -28,7 +28,7 @@ module CatalogTranslation
       self.class.register self
     end
 
-    def translate!(resource)
+    def translate!(resource, deferred=false)
       result = {}
       # temporarily set @resource to the parameter
       # for use by the blocks
@@ -38,7 +38,7 @@ module CatalogTranslation
 
       seen = {}
 
-      if @catch_all
+      if @catch_all and not deferred
         self.class.count(:unsupported)
         translation_failure "cannot be translated natively, falling back to #{self.class.default_description}"
       end
@@ -86,11 +86,12 @@ module CatalogTranslation
         # if a regular (not the catch-all) translation is unclean,
         # the user might wish to defer to the catch-all
         if !@clean_translation
-          translation_warning("emitting a `exec puppet resource` node because of the errors above.")
+          translation_warning("emitting a #{self.class.default_description} node because of the errors above.")
           @resource = nil
-          result = PuppetX::CatalogTranslation::Type.translation_for(self.class.default_translator).translate!(resource)
+          result = PuppetX::CatalogTranslation::Type.
+            translation_for(self.class.default_translator).
+            translate!(resource,deferred=true)
           self.class.count(:fallback)
-          self.class.count(:unsupported, -1)
           return result
         end
         self.class.count(:native) unless @output == :noop
