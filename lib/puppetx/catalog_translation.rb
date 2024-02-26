@@ -94,6 +94,9 @@ module PuppetX::CatalogTranslation
     if reset_log_level
       Puppet[:log_level] = "notice"
     end
+    if catalog.nil?
+      raise Puppet::Error.new("Aborting translation because catalog is not available")
+    end
     catalog
   end
 
