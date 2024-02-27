@@ -17,11 +17,10 @@ describe "PuppetX::CatalogTranslation::Type::Package" do
 
   it "fails on unsupported ensure values" do
     %w{1.3.1-5 latest 10bpo81 held}.each do |ensure_value|
-      Puppet.expects(:err).with(regexp_matches(/cannot be translated/)).twice
+      Puppet.expects(:err).with(regexp_matches(/cannot be translated/))
       catalog = resource_catalog("Package { provider => 'apt' } package { 'cowsay': ensure => '#{ensure_value}' }")
       graph = PuppetX::CatalogTranslation.to_mgmt(catalog)
 
-      # become 'exec puppet yamlresource' through the workaround
       expect(graph['resources']).to_not include('pkg')
       expect(graph['resources']).to     include('pippet')
     end

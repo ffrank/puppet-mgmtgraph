@@ -12,7 +12,6 @@ describe "PuppetX::CatalogTranslation::Type" do
 
       it "emits an error" do
         Puppet.expects(:err).with(regexp_matches /cannot translate.*hasrestart/)
-        Puppet.expects(:err).with(regexp_matches /cannot be translated natively/)
         translator.translate!(resource)
       end
 

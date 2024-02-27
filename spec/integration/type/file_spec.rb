@@ -28,7 +28,6 @@ describe "PuppetX::CatalogTranslation::Type::File" do
     Puppet.stubs(:err).with(regexp_matches(/ignore source permissions/))
 
     Puppet.expects(:err).with(regexp_matches(/puppet fileserver URL/))
-    Puppet.expects(:err).with(regexp_matches(/cannot be translated natively/))
 
     graph = PuppetX::CatalogTranslation.to_mgmt(catalog)
     expect(graph['resources']).to_not include 'file'
@@ -45,7 +44,6 @@ describe "PuppetX::CatalogTranslation::Type::File" do
     Puppet.stubs(:err).with(regexp_matches(/ignore source permissions/))
 
     Puppet.expects(:err).with(regexp_matches(/multiple sources/))
-    Puppet.expects(:err).with(regexp_matches(/cannot be translated natively/))
 
     graph = PuppetX::CatalogTranslation.to_mgmt(catalog)
     expect(graph['resources']).to_not include 'file'

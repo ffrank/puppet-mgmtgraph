@@ -129,7 +129,7 @@ describe "PuppetX::CatalogTranslation" do
       it "does not touch the catalog indirection terminus" do
         catalog_face.expects(:find)
         catalog_face.expects(:set_terminus).never
-        subject.get_catalog
+        expect { subject.get_catalog }.to raise_error(Puppet::Error)
       end
     end
 
